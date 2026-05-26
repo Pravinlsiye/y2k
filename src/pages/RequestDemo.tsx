@@ -2,7 +2,6 @@ import { createSignal, onMount } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { gsap } from "../lib/gsap";
 import Logo from "../components/Logo";
-import { MAIL } from "../lib/mail";
 
 export default function RequestDemo() {
   const navigate = useNavigate();

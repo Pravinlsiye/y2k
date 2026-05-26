@@ -1,4 +1,4 @@
-import { onMount, splitProps } from "solid-js";
+import { onMount } from "solid-js";
 import type { JSX } from "solid-js";
 import { gsap } from "../lib/gsap";
 
@@ -20,7 +20,7 @@ interface LogoProps {
  * All animation, hover glow, and block micro-motion live here.
  */
 export default function Logo(props: LogoProps) {
-  const [local, rest] = splitProps(props, ["size", "variant", "animate", "class", "style", "onClick"]);
+  const local = props;
   const size = () => local.size ?? 40;
   const variant = () => local.variant ?? "icon";
 

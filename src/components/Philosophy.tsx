@@ -1,5 +1,5 @@
 import { onMount } from "solid-js";
-import { gsap, ScrollTrigger } from "../lib/gsap";
+import { gsap } from "../lib/gsap";
 
 export default function Philosophy() {
   let sectionRef!: HTMLElement;

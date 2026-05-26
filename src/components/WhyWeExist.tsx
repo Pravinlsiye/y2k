@@ -1,5 +1,5 @@
 import { onMount } from "solid-js";
-import { gsap, ScrollTrigger, fadeUp } from "../lib/gsap";
+import { gsap, fadeUp } from "../lib/gsap";
 
 const _directives: unknown[] = [fadeUp];
 void _directives;
