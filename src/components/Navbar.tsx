@@ -1,15 +1,19 @@
 import { createSignal, onMount } from "solid-js";
+import { useNavigate } from "@solidjs/router";
 import { gsap, ScrollTrigger } from "../lib/gsap";
+import Logo from "./Logo";
 
 export default function Navbar() {
   let navRef!: HTMLElement;
   const [scrolled, setScrolled] = createSignal(false);
+  const navigate = useNavigate();
 
   const navLinks = [
-    { label: "About", href: "#about" },
-    { label: "Services", href: "#services" },
-    { label: "Philosophy", href: "#philosophy" },
-    { label: "Contact", href: "#contact" },
+    { label: "About", href: "#about", scroll: true },
+    { label: "Services", href: "#services", scroll: true },
+    { label: "Philosophy", href: "#philosophy", scroll: true },
+    { label: "Careers", href: "/careers", scroll: false },
+    { label: "Contact", href: "#contact", scroll: true },
   ];
 
   onMount(() => {
@@ -26,9 +30,14 @@ export default function Navbar() {
     });
   });
 
-  const scrollTo = (href: string) => {
-    const el = document.querySelector(href);
-    el?.scrollIntoView({ behavior: "smooth" });
+  const handleLink = (e: MouseEvent, href: string, scroll: boolean) => {
+    e.preventDefault();
+    if (!scroll) {
+      navigate(href);
+    } else {
+      const el = document.querySelector(href);
+      el?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -38,17 +47,8 @@ export default function Navbar() {
       classList={{ "navbar--scrolled": scrolled() }}
     >
       <div class="navbar__inner container">
-        <a href="#" class="navbar__logo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-          <svg width="40" height="40" viewBox="30 40 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="120" cy="130" r="72" stroke="#B8C0CC" stroke-width="10" stroke-linecap="round" opacity="0.96"/>
-            <ellipse cx="120" cy="130" rx="54" ry="72" stroke="#94A3B8" stroke-width="3" opacity="0.55"/>
-            <ellipse cx="120" cy="130" rx="28" ry="72" stroke="#94A3B8" stroke-width="2" opacity="0.35"/>
-            <ellipse cx="120" cy="130" rx="72" ry="28" stroke="#94A3B8" stroke-width="2" opacity="0.55"/>
-            <rect x="92" y="98" width="42" height="42" rx="5" fill="#312E81"/>
-            <rect x="120" y="82" width="42" height="42" rx="5" fill="#3F3F46"/>
-            <rect x="120" y="124" width="42" height="42" rx="5" fill="#134E4A"/>
-          </svg>
-          <span class="navbar__wordmark">Y2kSaaS</span>
+        <a href="/" class="navbar__logo" onClick={(e) => { e.preventDefault(); navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+          <Logo size={40} variant="full" />
         </a>
 
         <div class="navbar__links">
@@ -56,20 +56,29 @@ export default function Navbar() {
             <a
               class="navbar__link"
               href={link.href}
-              onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
+              onClick={(e) => handleLink(e, link.href, link.scroll)}
             >
               {link.label}
             </a>
           ))}
         </div>
 
-        <a
-          class="navbar__cta"
-          href="#contact"
-          onClick={(e) => { e.preventDefault(); scrollTo("#contact"); }}
-        >
-          Get in Touch
-        </a>
+        <div class="navbar__actions">
+          <a
+            class="navbar__signin"
+            href="/signin"
+            onClick={(e) => { e.preventDefault(); navigate("/signin"); }}
+          >
+            Sign In
+          </a>
+          <a
+            class="navbar__cta"
+            href="/demo"
+            onClick={(e) => { e.preventDefault(); navigate("/demo"); }}
+          >
+            Request Demo
+          </a>
+        </div>
       </div>
 
       <style>{`
@@ -98,7 +107,7 @@ export default function Navbar() {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: 2rem;
+          gap: 1.5rem;
         }
 
         .navbar__logo {
@@ -115,17 +124,12 @@ export default function Navbar() {
           height: 40px;
         }
 
-        .navbar__wordmark {
-          font-size: 1.3rem;
-          font-weight: 700;
-          letter-spacing: -0.02em;
-          color: var(--text-primary);
-        }
-
         .navbar__links {
           display: flex;
           align-items: center;
-          gap: 2rem;
+          gap: 1.75rem;
+          flex: 1;
+          justify-content: center;
         }
 
         .navbar__link {
@@ -156,28 +160,53 @@ export default function Navbar() {
           width: 100%;
         }
 
+        .navbar__actions {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          flex-shrink: 0;
+        }
+
+        .navbar__signin {
+          display: inline-block;
+          font-size: 0.85rem;
+          font-weight: 500;
+          padding: 0.55rem 1.1rem;
+          border-radius: 8px;
+          color: var(--text-muted);
+          border: 1px solid var(--border-subtle);
+          transition: all 0.3s ease;
+          white-space: nowrap;
+        }
+
+        .navbar__signin:hover {
+          color: var(--text-primary);
+          border-color: rgba(148, 163, 184, 0.25);
+          background: rgba(255,255,255,0.03);
+        }
+
         .navbar__cta {
           display: inline-block;
           font-size: 0.85rem;
           font-weight: 600;
-          padding: 0.6rem 1.4rem;
+          padding: 0.6rem 1.25rem;
           border-radius: 8px;
-          background: linear-gradient(135deg, var(--accent-indigo), rgba(99, 102, 241, 0.3));
-          color: var(--text-primary);
+          background: linear-gradient(135deg, #4F46E5, #6366F1);
+          color: #fff;
           border: 1px solid rgba(99, 102, 241, 0.3);
           transition: all 0.3s ease;
           white-space: nowrap;
-          flex-shrink: 0;
+          box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
         }
 
         .navbar__cta:hover {
-          background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(99, 102, 241, 0.2));
-          box-shadow: 0 0 24px rgba(99, 102, 241, 0.2);
-          border-color: rgba(99, 102, 241, 0.5);
+          box-shadow: 0 0 32px rgba(99, 102, 241, 0.3);
+          transform: translateY(-1px);
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
           .navbar__links { display: none; }
+          .navbar__signin { display: none; }
           .navbar__cta { font-size: 0.8rem; padding: 0.5rem 1rem; }
         }
       `}</style>

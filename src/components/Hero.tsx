@@ -1,7 +1,9 @@
 import { onMount } from "solid-js";
+import { useNavigate } from "@solidjs/router";
 import { gsap } from "../lib/gsap";
 
 export default function Hero() {
+  const navigate = useNavigate();
   let sectionRef!: HTMLElement;
   let taglineRef!: HTMLSpanElement;
   let headlineRef!: HTMLHeadingElement;
@@ -55,11 +57,33 @@ export default function Hero() {
         </p>
 
         <div ref={ctaRef} class="hero__cta-group">
-          <a href="#about" class="hero__cta hero__cta--primary" onClick={(e) => { e.preventDefault(); document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" }); }}>
-            Explore Our Work
+          <a
+            href="/demo"
+            class="hero__cta hero__cta--primary"
+            onClick={(e) => { e.preventDefault(); navigate("/demo"); }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style={{ display: "inline-block" }}>
+              <polygon points="23 7 16 12 23 17 23 7"/>
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+            </svg>
+            Request Demo
           </a>
-          <a href="#contact" class="hero__cta hero__cta--secondary" onClick={(e) => { e.preventDefault(); document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" }); }}>
-            Contact Us
+          <a
+            href="/talk"
+            class="hero__cta hero__cta--teal"
+            onClick={(e) => { e.preventDefault(); navigate("/talk"); }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style={{ display: "inline-block" }}>
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            Talk with Expert
+          </a>
+          <a
+            href="#about"
+            class="hero__cta hero__cta--secondary"
+            onClick={(e) => { e.preventDefault(); document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" }); }}
+          >
+            Explore Our Work
           </a>
         </div>
       </div>
@@ -185,6 +209,17 @@ export default function Hero() {
 
         .hero__cta--primary:hover {
           box-shadow: 0 0 50px rgba(99, 102, 241, 0.35);
+          transform: translateY(-2px);
+        }
+
+        .hero__cta--teal {
+          background: linear-gradient(135deg, #0f766e, #2DD4BF);
+          color: #fff;
+          box-shadow: 0 0 24px rgba(45, 212, 191, 0.15);
+        }
+
+        .hero__cta--teal:hover {
+          box-shadow: 0 0 40px rgba(45, 212, 191, 0.3);
           transform: translateY(-2px);
         }
 
