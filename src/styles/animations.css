@@ -1,0 +1,58 @@
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes rotateGlobe {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+@keyframes gridPulse {
+  0%, 100% { opacity: 0.03; }
+  50% { opacity: 0.06; }
+}
+
+.anim-hidden {
+  opacity: 0;
+}
