@@ -10,7 +10,7 @@ import TalkExpert from "./pages/TalkExpert";
 
 render(
   () => (
-    <Router>
+    <Router base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
       <Route path="/" component={App} />
       <Route path="/signin" component={SignIn} />
       <Route path="/careers" component={Careers} />
