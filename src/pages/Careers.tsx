@@ -155,6 +155,33 @@ export default function Careers() {
         </div>
       </div>
 
+      {/* Entry Level & Internships */}
+      <div class="container cr-intern">
+        <div class="cr-intern__card">
+          <div class="cr-intern__text">
+            <p class="cr-intern__eyebrow">Entry Level and Internships</p>
+            <h3 class="cr-intern__title">
+              Start your career journey here.
+            </h3>
+            <p class="cr-intern__body">
+              Exciting opportunities for students, recent graduates, and
+              early-career engineers across hardware, software, cloud, and AI.
+              We hire for potential, not pedigree.
+            </p>
+          </div>
+          <a
+            href="/careers/internship"
+            class="cr-btn cr-intern__btn"
+            onClick={(e) => { e.preventDefault(); navigate("/careers/internship"); }}
+          >
+            View internship programme
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
       <style>{`
         .careers {
           background: var(--bg-primary);
@@ -460,6 +487,66 @@ export default function Careers() {
           max-width: 44ch;
           line-height: 1.55;
         }
+
+        /* Internship section */
+        .cr-intern {
+          max-width: 800px;
+          margin-top: 1.5rem;
+        }
+
+        .cr-intern__card {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 2rem;
+          padding: 2rem 2.5rem;
+          border: 1px solid oklch(0.56 0.21 264 / 0.2);
+          border-top: 2px solid oklch(0.56 0.21 264 / 0.5);
+          border-radius: 3px;
+          background: oklch(0.56 0.21 264 / 0.04);
+          flex-wrap: wrap;
+          transition: border-color 200ms var(--ease-expo), background 200ms var(--ease-expo);
+        }
+
+        .cr-intern__card:hover {
+          background: oklch(0.56 0.21 264 / 0.06);
+          border-color: oklch(0.56 0.21 264 / 0.35);
+        }
+
+        .cr-intern__eyebrow {
+          font-family: var(--font-mono);
+          font-size: 0.65rem;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--accent-indigo-light);
+          margin-bottom: 0.4rem;
+        }
+
+        .cr-intern__title {
+          font-size: 1.05rem;
+          font-weight: 700;
+          color: var(--text-primary);
+          letter-spacing: -0.01em;
+          margin-bottom: 0.4rem;
+        }
+
+        .cr-intern__body {
+          font-size: 0.845rem;
+          color: var(--text-muted);
+          max-width: 48ch;
+          line-height: 1.55;
+        }
+
+        .cr-intern__btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
+
+        .cr-intern__btn svg { display: inline-block; }
 
         @media (max-width: 900px) {
           .cr-perks { grid-template-columns: repeat(3, 1fr); }

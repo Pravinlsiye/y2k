@@ -115,6 +115,26 @@ Please get in touch.
 `,
   }),
 
+  internship: mailto({
+    to: "careers@y2ksaas.com",
+    subject: "Internship Application — Y2kSaaS",
+    body: `Hi Y2kSaaS Careers team,
+
+I am interested in an internship opportunity.
+
+Name: 
+University / School: 
+Programme / Year: 
+Area of interest: (Hardware · Cloud · AI · Developer Tools)
+Availability: 
+LinkedIn / GitHub / Portfolio:
+
+I have attached my resume to this email.
+
+Looking forward to hearing from you.
+`,
+  }),
+
   support: mailto({
     to: "support@y2ksaas.com",
     subject: "Support Request — Y2kSaaS",

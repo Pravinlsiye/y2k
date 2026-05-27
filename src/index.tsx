@@ -6,6 +6,7 @@ import App from "./App";
 import SignIn from "./pages/SignIn";
 import Careers from "./pages/Careers";
 import JobDetail from "./pages/JobDetail";
+import Internship from "./pages/Internship";
 import ProductPrism from "./pages/ProductPrism";
 import ProductAnvil from "./pages/ProductAnvil";
 import ProductVault from "./pages/ProductVault";
@@ -19,6 +20,7 @@ render(
       <Route path="/" component={App} />
       <Route path="/signin" component={SignIn} />
       <Route path="/careers" component={Careers} />
+      <Route path="/careers/internship" component={Internship} />
       <Route path="/careers/:id" component={JobDetail} />
       <Route path="/products/prism"  component={ProductPrism}  />
       <Route path="/products/anvil"  component={ProductAnvil}  />
