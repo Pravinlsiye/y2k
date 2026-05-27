@@ -16,19 +16,32 @@ const perks = [
   { label: "Team Offsites",    detail: "Quarterly in-person gatherings" },
 ];
 
+const PAGE_SIZE = 10;
+
 export default function Careers() {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = createSignal("All");
+  const [page, setPage] = createSignal(1);
   let heroRef!: HTMLDivElement;
   let listRef!: HTMLDivElement;
+  let openingsRef!: HTMLDivElement;
 
   const filtered = () =>
     activeFilter() === "All" ? jobs : jobs.filter((j) => j.tag === activeFilter());
 
+  const totalPages = () => Math.ceil(filtered().length / PAGE_SIZE);
+
+  const paginated = () => {
+    const start = (page() - 1) * PAGE_SIZE;
+    return filtered().slice(start, start + PAGE_SIZE);
+  };
+
+  const scrollToList = () => {
+    openingsRef?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   onMount(() => {
     const ease = "expo.out";
-
-    // Hero entrance — weight-aware, expo.out
     gsap.from(Array.from(heroRef.children), {
       opacity: 0,
       y: 14,
@@ -48,6 +61,18 @@ export default function Careers() {
         ease: "expo.out",
       });
     });
+  };
+
+  const changeFilter = (f: string) => {
+    setActiveFilter(f);
+    setPage(1);
+    animateList();
+  };
+
+  const goPage = (n: number) => {
+    setPage(n);
+    animateList();
+    scrollToList();
   };
 
   return (
@@ -88,10 +113,15 @@ export default function Careers() {
       {/* Job listings */}
       <div class="container cr-openings">
 
-        <div class="cr-openings__head">
+        <div ref={openingsRef} class="cr-openings__head">
           <h2 class="cr-openings__title">Open Roles</h2>
           <p class="cr-openings__count">
             {filtered().length} position{filtered().length !== 1 ? "s" : ""}
+            {totalPages() > 1 && (
+              <span class="cr-openings__page-info">
+                {" "}— page {page()} of {totalPages()}
+              </span>
+            )}
           </p>
         </div>
 
@@ -101,7 +131,7 @@ export default function Careers() {
             <button
               class="cr-filter"
               classList={{ "cr-filter--active": activeFilter() === f }}
-              onClick={() => { setActiveFilter(f); animateList(); }}
+              onClick={() => changeFilter(f)}
               type="button"
             >
               {f}
@@ -111,7 +141,7 @@ export default function Careers() {
 
         {/* Job list — divide-y, no glass cards */}
         <div ref={listRef} class="cr-job-list">
-          {filtered().map((job) => (
+          {paginated().map((job) => (
             <div class="cr-job-row">
               <div class="cr-job-row__info">
                 <p class="cr-job-row__dept">{job.dept}</p>
@@ -119,6 +149,7 @@ export default function Careers() {
                 <div class="cr-job-row__meta">
                   <span class="cr-job-row__tag">{job.location}</span>
                   <span class="cr-job-row__tag">{job.type}</span>
+                  <span class="cr-job-row__tag cr-job-row__tag--id">{job.id}</span>
                 </div>
               </div>
               <a
@@ -138,6 +169,51 @@ export default function Careers() {
             <p class="cr-empty">No open roles in this area right now. Check back soon.</p>
           )}
         </div>
+
+        {/* Pagination */}
+        {totalPages() > 1 && (
+          <div class="cr-pagination">
+            <button
+              class="cr-pg-btn"
+              onClick={() => goPage(page() - 1)}
+              disabled={page() === 1}
+              aria-label="Previous page"
+              type="button"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+            </button>
+
+            <div class="cr-pg-pages">
+              {Array.from({ length: totalPages() }, (_, i) => i + 1).map((n) => (
+                <button
+                  class="cr-pg-num"
+                  classList={{ "cr-pg-num--active": page() === n }}
+                  onClick={() => goPage(n)}
+                  aria-label={`Page ${n}`}
+                  aria-current={page() === n ? "page" : undefined}
+                  type="button"
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
+
+            <button
+              class="cr-pg-btn"
+              onClick={() => goPage(page() + 1)}
+              disabled={page() === totalPages()}
+              aria-label="Next page"
+              type="button"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+        )}
+
       </div>
 
       {/* Bottom open application */}
@@ -449,6 +525,104 @@ export default function Careers() {
         }
 
         .cr-job-row__apply:active { transform: scale(0.97); }
+
+        /* Job ID tag */
+        .cr-job-row__tag--id {
+          font-family: var(--font-mono);
+          font-size: 0.62rem;
+          letter-spacing: 0.06em;
+          color: var(--text-dim);
+          border-color: oklch(0.96 0.006 265 / 0.04);
+        }
+
+        /* Page info in count */
+        .cr-openings__page-info {
+          color: var(--text-dim);
+          font-weight: 400;
+        }
+
+        /* Pagination */
+        .cr-pagination {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding-top: 2rem;
+          border-top: 1px solid var(--border-subtle);
+          margin-top: 0;
+        }
+
+        .cr-pg-btn {
+          width: 34px;
+          height: 34px;
+          border-radius: 3px;
+          background: var(--bg-card);
+          border: 1px solid var(--border-subtle);
+          color: var(--text-muted);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: var(--font-sans);
+          transition:
+            background 160ms var(--ease-expo),
+            color      160ms var(--ease-expo),
+            transform  160ms var(--ease-expo);
+        }
+
+        .cr-pg-btn:hover:not(:disabled) {
+          background: var(--bg-secondary);
+          color: var(--text-primary);
+        }
+
+        .cr-pg-btn:active:not(:disabled) { transform: scale(0.95); }
+
+        .cr-pg-btn:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+
+        .cr-pg-btn svg { display: inline-block; }
+
+        .cr-pg-pages {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+        }
+
+        .cr-pg-num {
+          min-width: 34px;
+          height: 34px;
+          padding: 0 0.5rem;
+          border-radius: 3px;
+          background: var(--bg-card);
+          border: 1px solid var(--border-subtle);
+          font-family: var(--font-mono);
+          font-size: 0.78rem;
+          font-weight: 500;
+          color: var(--text-muted);
+          cursor: pointer;
+          font-variant-numeric: tabular-nums;
+          transition:
+            background 160ms var(--ease-expo),
+            border-color 160ms var(--ease-expo),
+            color        160ms var(--ease-expo),
+            transform    160ms var(--ease-expo);
+        }
+
+        .cr-pg-num:hover:not(.cr-pg-num--active) {
+          background: var(--bg-secondary);
+          color: var(--text-primary);
+        }
+
+        .cr-pg-num:active { transform: scale(0.95); }
+
+        .cr-pg-num--active {
+          background: oklch(0.56 0.21 264 / 0.1);
+          border-color: oklch(0.56 0.21 264 / 0.35);
+          color: var(--accent-indigo-light);
+          cursor: default;
+        }
 
         .cr-empty {
           text-align: center;
