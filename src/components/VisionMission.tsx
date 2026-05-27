@@ -1,147 +1,178 @@
-import { fadeUp, scaleIn } from "../lib/gsap";
+import { onMount } from "solid-js";
+import { gsap, fadeUp } from "../lib/gsap";
 
-const _directives: unknown[] = [fadeUp, scaleIn];
+const _directives: unknown[] = [fadeUp];
 void _directives;
 
 export default function VisionMission() {
+  let sectionRef!: HTMLElement;
+
+  onMount(() => {
+    const cols = sectionRef.querySelectorAll(".vm-col");
+    gsap.from(cols, {
+      opacity: 0,
+      y: 14,
+      duration: 0.7,
+      stagger: 0.12,
+      ease: "expo.out",
+      scrollTrigger: {
+        trigger: sectionRef,
+        start: "top 85%",
+        toggleActions: "play none none none",
+      },
+    });
+  });
+
   return (
-    <section class="section vision-mission">
+    <section ref={sectionRef} class="section vm">
       <div class="container">
-        <div class="vm__header" use:fadeUp>
-          <span class="section-label">Direction</span>
-          <h2 class="section-title">Vision &amp; Mission</h2>
+
+        {/* Header — left-aligned, no centered card */}
+        <div class="vm-head" use:fadeUp>
+          <p class="vm-head__label">Direction</p>
+          <h2 class="vm-head__title">Vision and Mission</h2>
         </div>
 
-        <div class="vm__grid">
-          <div class="vm__card vm__card--vision" use:scaleIn>
-            <div class="vm__card-glow" />
-            <span class="vm__card-label">Our Vision</span>
-            <p class="vm__card-text">
-              To build intelligent systems that bridge hardware, software, and human
-              operations into seamless real-world experiences.
+        <hr class="vm-rule" />
+
+        {/* Two-column editorial layout — no cards, no glass */}
+        <div class="vm-grid">
+          <div class="vm-col">
+            <p class="vm-col__role">Vision</p>
+            <p class="vm-col__statement">
+              To build intelligent systems that bridge hardware, software, and
+              human operations into reliable real-world experiences.
             </p>
-            <p class="vm__card-sub">
-              We believe the future belongs to focused engineering solutions:
-              systems that are practical, scalable, and designed around actual
-              human and operational needs.
+            <p class="vm-col__support">
+              We believe the future belongs to focused engineering: systems that
+              are practical, scalable, and designed around actual operational needs,
+              not feature roadmaps.
             </p>
           </div>
 
-          <div class="vm__card vm__card--mission" use:scaleIn>
-            <div class="vm__card-glow" />
-            <span class="vm__card-label">Our Mission</span>
-            <p class="vm__card-text">
-              To engineer technology products that solve overlooked problems through
-              connected hardware, scalable software, and intelligent infrastructure.
+          <div class="vm-col">
+            <p class="vm-col__role">Mission</p>
+            <p class="vm-col__statement">
+              To engineer technology products that solve overlooked operational
+              problems through connected hardware, scalable software, and
+              intelligent infrastructure.
             </p>
-            <p class="vm__card-sub">
+            <p class="vm-col__support">
               Our approach combines engineering discipline, practical system design,
               and long-term scalability to create products that deliver measurable
-              impact across industries and users.
+              impact across industries.
             </p>
           </div>
         </div>
+
       </div>
 
       <style>{`
-        .vm__header {
-          text-align: center;
-          margin-bottom: 3.5rem;
+        .vm {
+          background: var(--bg-secondary); /* alternating surface */
         }
 
-        .vm__grid {
+        .vm-head {
+          margin-bottom: 2rem;
+        }
+
+        .vm-head__label {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          font-size: 0.72rem;
+          font-weight: 500;
+          letter-spacing: 0.07em;
+          color: var(--text-muted);
+          margin-bottom: 1rem;
+        }
+
+        .vm-head__label::before {
+          content: '';
+          display: block;
+          width: 18px;
+          height: 1px;
+          background: var(--text-dim);
+        }
+
+        .vm-head__title {
+          font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+          font-weight: 700;
+          line-height: 1.1;
+          letter-spacing: -0.025em;
+          color: var(--text-primary);
+        }
+
+        /* Simple horizontal rule — no gradient glow */
+        .vm-rule {
+          height: 1px;
+          background: var(--border-moderate);
+          border: none;
+          margin: 0 0 3rem;
+        }
+
+        /* Two columns — pure typography, no card containers */
+        .vm-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 2rem;
+          gap: 4rem;
         }
 
-        .vm__card {
-          position: relative;
-          padding: 2.5rem;
-          border-radius: 20px;
-          background: var(--bg-card);
-          border: 1px solid var(--border-subtle);
-          overflow: hidden;
-          transition: border-color 0.5s ease, transform 0.4s ease;
-        }
-
-        .vm__card:hover {
-          transform: translateY(-4px);
-        }
-
-        .vm__card--vision {
-          border-color: rgba(99, 102, 241, 0.15);
-        }
-
-        .vm__card--vision:hover {
-          border-color: rgba(99, 102, 241, 0.4);
-        }
-
-        .vm__card--mission {
-          border-color: rgba(45, 212, 191, 0.15);
-        }
-
-        .vm__card--mission:hover {
-          border-color: rgba(45, 212, 191, 0.4);
-        }
-
-        .vm__card-glow {
-          position: absolute;
-          top: -50%;
-          left: -50%;
-          width: 200%;
-          height: 200%;
-          pointer-events: none;
-          opacity: 0;
-          transition: opacity 0.5s ease;
-        }
-
-        .vm__card--vision .vm__card-glow {
-          background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.06), transparent 50%);
-        }
-
-        .vm__card--mission .vm__card-glow {
-          background: radial-gradient(circle at 70% 30%, rgba(45, 212, 191, 0.06), transparent 50%);
-        }
-
-        .vm__card:hover .vm__card-glow {
-          opacity: 1;
-        }
-
-        .vm__card-label {
-          display: inline-block;
-          font-size: 0.7rem;
-          font-weight: 700;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          margin-bottom: 1.2rem;
+        .vm-col {
           position: relative;
         }
 
-        .vm__card--vision .vm__card-label {
-          color: var(--accent-indigo-light);
+        /* Thin top-border for each column — structural, not decorative */
+        .vm-col::before {
+          content: '';
+          display: block;
+          width: 100%;
+          height: 2px;
+          background: var(--border-moderate);
+          margin-bottom: 1.75rem;
         }
 
-        .vm__card--mission .vm__card-label {
-          color: var(--accent-teal-light);
+        .vm-col:first-child::before {
+          background: var(--accent-indigo-light);
+          opacity: 0.5;
         }
 
-        .vm__card-text {
-          font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+        .vm-col:last-child::before {
+          background: var(--accent-teal-light);
+          opacity: 0.5;
+        }
+
+        .vm-col__role {
+          font-family: var(--font-mono);
+          font-size: 0.68rem;
           font-weight: 600;
-          line-height: 1.5;
-          color: var(--text-primary);
-          margin-bottom: 1.2rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--text-dim);
+          margin-bottom: 1rem;
         }
 
-        .vm__card-sub {
-          font-size: 0.95rem;
-          line-height: 1.7;
+        .vm-col__statement {
+          font-size: clamp(1rem, 1.6vw, 1.2rem);
+          font-weight: 600;
+          line-height: 1.45;
+          letter-spacing: -0.01em;
+          color: var(--text-primary);
+          margin-bottom: 1rem;
+        }
+
+        .vm-col__support {
+          font-size: 0.875rem;
+          line-height: 1.65;
           color: var(--text-muted);
+          max-width: 50ch;
         }
 
         @media (max-width: 768px) {
-          .vm__grid { grid-template-columns: 1fr; }
+          .vm-grid {
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+          }
         }
       `}</style>
     </section>

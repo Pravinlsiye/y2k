@@ -1,151 +1,235 @@
-import { fadeUp, staggerUp } from "../lib/gsap";
+import { onMount } from "solid-js";
+import { gsap, fadeUp } from "../lib/gsap";
 
-const _directives: unknown[] = [fadeUp, staggerUp];
+const _directives: unknown[] = [fadeUp];
 void _directives;
 
 interface Service {
-  icon: string;
+  num: string;
   title: string;
   description: string;
-  accent: string;
+  tags: string[];
 }
 
 const services: Service[] = [
   {
-    icon: "M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z",
+    num: "01",
     title: "Connected Hardware",
-    description: "Embedded systems and IoT infrastructure designed for reliability in demanding operational environments.",
-    accent: "var(--accent-indigo-light)",
+    description:
+      "Embedded systems and IoT infrastructure designed for reliability in demanding operational environments. From circuit design to firmware to remote device management.",
+    tags: ["Embedded", "IoT", "Remote Mgmt"],
   },
   {
-    icon: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4",
+    num: "02",
     title: "Scalable Software",
-    description: "SaaS platforms and enterprise applications built for performance, security, and long-term maintainability.",
-    accent: "var(--accent-teal-light)",
+    description:
+      "SaaS platforms and enterprise applications built for performance, long-term security, and maintainability. Architecture decisions made for production, not prototypes.",
+    tags: ["SaaS", "API", "Platform"],
   },
   {
-    icon: "M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z",
+    num: "03",
     title: "Cloud Systems",
-    description: "Distributed cloud infrastructure with intelligent scaling, monitoring, and operational analytics.",
-    accent: "var(--accent-indigo-light)",
+    description:
+      "Distributed cloud infrastructure with intelligent scaling and operational analytics. Built for the specific reliability requirements of each deployment, not generic defaults.",
+    tags: ["Infrastructure", "Monitoring", "Scale"],
   },
   {
-    icon: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15",
+    num: "04",
     title: "Automation",
-    description: "Workflow automation systems that reduce manual operations and eliminate process bottlenecks at scale.",
-    accent: "var(--accent-teal-light)",
+    description:
+      "Workflow automation systems that eliminate manual operations and process bottlenecks. We identify the friction before writing the automation.",
+    tags: ["Pipelines", "Orchestration", "CI/CD"],
   },
   {
-    icon: "M13 10V3L4 14h7v7l9-11h-7z",
+    num: "05",
     title: "Intelligent Workflows",
-    description: "AI-assisted decision systems and smart pipelines that transform fragmented data into actionable clarity.",
-    accent: "var(--accent-indigo-light)",
+    description:
+      "AI-assisted decision systems and smart pipelines that transform operational data into actionable clarity. Not AI for its own sake: AI applied to real problems.",
+    tags: ["AI/ML", "Data", "Decision Systems"],
   },
 ];
 
 export default function Services() {
+  let listRef!: HTMLDivElement;
+
+  onMount(() => {
+    const rows = listRef.querySelectorAll(".svc-row");
+    rows.forEach((row, i) => {
+      gsap.from(row, {
+        opacity: 0,
+        y: 14,
+        duration: 0.65,
+        ease: "expo.out",
+        delay: i * 0.06,
+        scrollTrigger: {
+          trigger: row,
+          start: "top 89%",
+          toggleActions: "play none none none",
+        },
+      });
+    });
+  });
+
   return (
     <section id="services" class="section services">
       <div class="container">
-        <div class="services__header" use:fadeUp>
-          <span class="section-label">What We Build</span>
-          <h2 class="section-title">
-            Integrated Technology.<br />Real-World Impact.
+
+        <div class="svc-header" use:fadeUp>
+          <p class="svc-header__label">What We Build</p>
+          <h2 class="svc-header__title">
+            Five engineering domains.<br />One integrated system.
           </h2>
-          <p class="section-text">
-            From lightweight utilities to enterprise-grade platforms, every product
-            begins with one clear objective: solve the problem properly.
-          </p>
         </div>
 
-        <div class="services__grid" use:staggerUp>
-          {services.map((service) => (
-            <div class="services__card glass-card">
-              <div class="services__icon" style={{ color: service.accent }}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d={service.icon} />
-                </svg>
+        <div ref={listRef} class="svc-list">
+          {services.map((svc) => (
+            <div class="svc-row">
+              <span class="svc-num">{svc.num}</span>
+
+              <div class="svc-main">
+                <h3 class="svc-title">{svc.title}</h3>
+                <p class="svc-desc">{svc.description}</p>
               </div>
-              <h3 class="services__card-title">{service.title}</h3>
-              <p class="services__card-desc">{service.description}</p>
-              <div class="services__card-line" style={{ background: `linear-gradient(90deg, ${service.accent}, transparent)` }} />
+
+              <div class="svc-tags">
+                {svc.tags.map((tag) => (
+                  <span class="svc-tag">{tag}</span>
+                ))}
+              </div>
             </div>
           ))}
         </div>
+
       </div>
 
       <style>{`
-        .services__header {
-          text-align: center;
-          margin-bottom: 4rem;
+        .svc-header {
+          margin-bottom: 3.5rem;
         }
 
-        .services__header .section-text {
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .services__grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 1.5rem;
-        }
-
-        .services__grid > :nth-child(4),
-        .services__grid > :nth-child(5) {
-          grid-column: span 1;
-        }
-
-        .services__card {
-          position: relative;
-          overflow: hidden;
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-
-        .services__icon {
-          width: 48px;
-          height: 48px;
+        .svc-header__label {
           display: flex;
           align-items: center;
-          justify-content: center;
-          border-radius: 12px;
-          background: rgba(99, 102, 241, 0.08);
-          border: 1px solid rgba(99, 102, 241, 0.12);
+          gap: 0.75rem;
+          font-size: 0.72rem;
+          font-weight: 500;
+          letter-spacing: 0.07em;
+          color: var(--text-muted);
+          margin-bottom: 1.25rem;
         }
 
-        .services__card-title {
-          font-size: 1.15rem;
+        .svc-header__label::before {
+          content: '';
+          display: block;
+          width: 18px;
+          height: 1px;
+          background: var(--text-dim);
+        }
+
+        .svc-header__title {
+          font-size: clamp(1.8rem, 3.5vw, 2.8rem);
           font-weight: 700;
+          line-height: 1.1;
+          letter-spacing: -0.025em;
           color: var(--text-primary);
         }
 
-        .services__card-desc {
-          font-size: 0.9rem;
-          line-height: 1.7;
+        /* Numbered list — divide-y pattern, no cards */
+        .svc-list {
+          border-top: 1px solid var(--border-subtle);
+        }
+
+        .svc-row {
+          display: grid;
+          grid-template-columns: 48px 1fr 180px;
+          gap: 2rem;
+          align-items: start;
+          padding: 2rem 0;
+          border-bottom: 1px solid var(--border-subtle);
+          transition: background 200ms var(--ease-expo);
+        }
+
+        .svc-row:hover {
+          background: oklch(0.96 0.006 265 / 0.02);
+          margin-inline: -1.5rem;
+          padding-inline: 1.5rem;
+          border-radius: 2px;
+        }
+
+        .svc-num {
+          font-family: var(--font-mono);
+          font-size: 0.7rem;
+          font-weight: 600;
+          color: var(--text-dim);
+          letter-spacing: 0.05em;
+          line-height: 1.75rem; /* align with title baseline */
+          padding-top: 2px;
+          font-variant-numeric: tabular-nums;
+        }
+
+        .svc-main {
+          min-width: 0;
+        }
+
+        .svc-title {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: var(--text-primary);
+          letter-spacing: -0.015em;
+          margin-bottom: 0.6rem;
+          line-height: 1.3;
+        }
+
+        .svc-desc {
+          font-size: 0.875rem;
+          line-height: 1.65;
           color: var(--text-muted);
-          flex: 1;
+          max-width: 55ch;
         }
 
-        .services__card-line {
-          height: 2px;
-          width: 60px;
-          border-radius: 1px;
-          opacity: 0.5;
-          transition: width 0.4s var(--ease-out-expo);
+        /* Tags — right column, domain taxonomy */
+        .svc-tags {
+          display: flex;
+          flex-direction: column;
+          gap: 0.35rem;
+          align-items: flex-end;
+          padding-top: 2px;
         }
 
-        .services__card:hover .services__card-line {
-          width: 100%;
+        .svc-tag {
+          font-family: var(--font-mono);
+          font-size: 0.65rem;
+          font-weight: 500;
+          letter-spacing: 0.06em;
+          color: var(--text-dim);
+          padding: 0.2rem 0.55rem;
+          border: 1px solid var(--border-subtle);
+          border-radius: 2px;
+          white-space: nowrap;
+          font-variant-numeric: tabular-nums;
         }
 
-        @media (max-width: 900px) {
-          .services__grid { grid-template-columns: repeat(2, 1fr); }
+        @media (max-width: 860px) {
+          .svc-row {
+            grid-template-columns: 36px 1fr;
+            gap: 1.5rem;
+          }
+
+          .svc-tags {
+            display: none;
+          }
         }
 
         @media (max-width: 600px) {
-          .services__grid { grid-template-columns: 1fr; }
+          .svc-row {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+          }
+
+          .svc-num {
+            line-height: 1;
+            padding-top: 0;
+          }
         }
       `}</style>
     </section>

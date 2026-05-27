@@ -1,31 +1,57 @@
+/* ============================================================
+   Y2kSaaS Design System — OKLCH Color Tokens
+   Strategy: Committed (indigo carries 30-50% of interactive surface)
+   Theme: Dark-first, indigo-biased neutrals, no pure black/white
+   ============================================================ */
+
 :root {
-  --bg-primary: #0B1220;
-  --bg-secondary: #0F1A2E;
-  --bg-card: rgba(15, 26, 46, 0.6);
-  --bg-glass: rgba(15, 26, 46, 0.4);
+  /* --- Surface layers --- */
+  --bg-primary:   oklch(0.16 0.012 265);   /* base surface */
+  --bg-secondary: oklch(0.19 0.011 265);   /* raised surface */
+  --bg-card:      oklch(0.21 0.010 265);   /* card/panel */
+  --bg-overlay:   oklch(0.20 0.011 265 / 0.94);
 
-  --text-primary: #F8FAFC;
-  --text-secondary: #CBD5E1;
-  --text-muted: #94A3B8;
-  --text-dim: #64748B;
+  /* --- Text hierarchy --- */
+  --text-primary:   oklch(0.96 0.006 265);  /* headings, labels */
+  --text-secondary: oklch(0.78 0.010 265);  /* body copy */
+  --text-muted:     oklch(0.62 0.012 265);  /* supporting text */
+  --text-dim:       oklch(0.47 0.010 265);  /* meta, timestamps */
 
-  --accent-indigo: #312E81;
-  --accent-teal: #134E4A;
-  --accent-zinc: #3F3F46;
-  --accent-indigo-light: #6366F1;
-  --accent-teal-light: #2DD4BF;
+  /* --- Accent: Committed strategy, indigo --- */
+  --accent-indigo:       oklch(0.38 0.16 264);   /* deep indigo fill */
+  --accent-indigo-light: oklch(0.56 0.21 264);   /* primary interactive */
+  --accent-indigo-bright:oklch(0.68 0.18 264);   /* on-dark label */
+  --accent-teal:         oklch(0.40 0.10 185);   /* deep teal */
+  --accent-teal-light:   oklch(0.74 0.14 185);   /* teal interactive */
+  --accent-zinc:         oklch(0.34 0.008 265);  /* zinc neutral */
 
-  --border-subtle: rgba(148, 163, 184, 0.1);
-  --border-glow: rgba(99, 102, 241, 0.3);
+  /* --- Borders --- */
+  --border-subtle:   oklch(0.96 0.006 265 / 0.07);   /* barely there */
+  --border-moderate: oklch(0.96 0.006 265 / 0.13);   /* card edge */
+  --border-strong:   oklch(0.96 0.006 265 / 0.22);   /* distinct */
+  --border-glow:     oklch(0.56 0.21 264 / 0.28);    /* hover accent */
 
+  /* --- Typography --- */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'JetBrains Mono', 'Fira Code', monospace;
 
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  /* --- Motion: ease-out-expo only --- */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
+  /* --- Layout --- */
   --container-max: 1200px;
-  --section-padding: clamp(80px, 12vh, 160px);
+  --section-block:  clamp(72px, 10vh, 140px);
+
+  /* Legacy aliases (backward compat during migration) */
+  --border-subtle:    oklch(0.96 0.006 265 / 0.07);
+  --ease-out-expo:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart:   cubic-bezier(0.25, 1, 0.5, 1);
+  --section-padding:  clamp(72px, 10vh, 140px);
 }
+
+/* ============================================================
+   Reset
+   ============================================================ */
 
 *, *::before, *::after {
   margin: 0;
@@ -37,6 +63,7 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-size-adjust: none;
 }
 
 body {
@@ -46,32 +73,6 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   min-height: 100vh;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99, 102, 241, 0.06), transparent);
-  pointer-events: none;
-  z-index: 0;
-}
-
-#root {
-  position: relative;
-  z-index: 1;
 }
 
 a {
@@ -92,66 +93,120 @@ img {
 }
 
 ::selection {
-  background: rgba(99, 102, 241, 0.3);
+  background: oklch(0.56 0.21 264 / 0.28);
   color: var(--text-primary);
+}
+
+/* ============================================================
+   Layout primitives
+   ============================================================ */
+
+#root {
+  position: relative;
 }
 
 .container {
   width: 100%;
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 clamp(20px, 4vw, 48px);
+  padding-inline: clamp(20px, 4vw, 48px);
 }
 
 .section {
-  padding: var(--section-padding) 0;
+  padding-block: var(--section-block);
   position: relative;
 }
 
+/* ============================================================
+   Typography utilities
+   ============================================================ */
+
 .section-label {
-  font-size: 0.75rem;
+  display: block;
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--accent-indigo-light);
+  color: var(--accent-indigo-bright);
   margin-bottom: 1rem;
 }
 
 .section-title {
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: clamp(1.9rem, 4.5vw, 3.2rem);
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
   color: var(--text-primary);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .section-text {
-  font-size: clamp(1rem, 1.5vw, 1.2rem);
-  line-height: 1.8;
+  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+  line-height: 1.65;
   color: var(--text-secondary);
-  max-width: 640px;
+  max-width: 62ch;
 }
 
-.glass-card {
-  background: var(--bg-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-subtle);
-  border-radius: 16px;
+/* ============================================================
+   Surface utilities
+   ============================================================ */
+
+/* Replaces glass-card everywhere glass is not semantically needed */
+.surface {
+  background: var(--bg-card);
+  border: 1px solid var(--border-moderate);
+  border-radius: 4px;
   padding: 2rem;
-  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  transition:
+    border-color 200ms var(--ease-expo),
+    background  200ms var(--ease-expo);
+}
+
+.surface:hover {
+  border-color: var(--border-glow);
+}
+
+/* Glass: reserved for navbar only */
+.glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-moderate);
+  border-radius: 4px;
+  padding: 2rem;
+  transition:
+    border-color 200ms var(--ease-expo),
+    box-shadow   200ms ease;
 }
 
 .glass-card:hover {
   border-color: var(--border-glow);
-  box-shadow: 0 0 40px rgba(99, 102, 241, 0.08);
+  box-shadow: 0 4px 24px oklch(0 0 0 / 0.3);
 }
 
-.glow-line {
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent-indigo-light), var(--accent-teal-light), transparent);
+/* Thin rule — no gradient, no glow, just material edge */
+.divider {
+  height: 1px;
+  background: var(--border-moderate);
   border: none;
   margin: 0;
-  opacity: 0.4;
+}
+
+/* Legacy .glow-line alias (keep for existing uses, simplified) */
+.glow-line {
+  height: 1px;
+  background: var(--border-moderate);
+  border: none;
+  margin: 0;
+  opacity: 0.6;
+}
+
+/* ============================================================
+   Accessibility
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

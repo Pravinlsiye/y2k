@@ -9,24 +9,24 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   const navLinks = [
-    { label: "About", href: "#about", scroll: true },
-    { label: "Services", href: "#services", scroll: true },
+    { label: "About",      href: "#about",      scroll: true },
+    { label: "Services",   href: "#services",   scroll: true },
     { label: "Philosophy", href: "#philosophy", scroll: true },
-    { label: "Careers", href: "/careers", scroll: false },
-    { label: "Contact", href: "#contact", scroll: true },
+    { label: "Careers",    href: "/careers",    scroll: false },
+    { label: "Contact",    href: "#contact",    scroll: true },
   ];
 
   onMount(() => {
     ScrollTrigger.create({
-      start: "top -80",
+      start: "top -60",
       onUpdate: (self) => setScrolled(self.progress > 0),
     });
 
     gsap.from(navRef, {
       opacity: 0,
-      duration: 1.2,
-      ease: "power2.out",
-      delay: 0.3,
+      duration: 1,
+      ease: "expo.out",
+      delay: 0.2,
     });
   });
 
@@ -35,8 +35,7 @@ export default function Navbar() {
     if (!scroll) {
       navigate(href);
     } else {
-      const el = document.querySelector(href);
-      el?.scrollIntoView({ behavior: "smooth" });
+      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -47,8 +46,12 @@ export default function Navbar() {
       classList={{ "navbar--scrolled": scrolled() }}
     >
       <div class="navbar__inner container">
-        <a href="/" class="navbar__logo" onClick={(e) => { e.preventDefault(); navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
-          <Logo size={40} variant="full" />
+        <a
+          href="/"
+          class="navbar__logo"
+          onClick={(e) => { e.preventDefault(); navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+        >
+          <Logo size={30} variant="full" />
         </a>
 
         <div class="navbar__links">
@@ -88,19 +91,19 @@ export default function Navbar() {
           left: 0;
           width: 100%;
           z-index: 100;
-          padding: 1rem 0;
-          transition: background 0.4s var(--ease-out-expo),
-                      backdrop-filter 0.4s var(--ease-out-expo),
-                      padding 0.4s var(--ease-out-expo),
-                      border-color 0.4s var(--ease-out-expo);
+          padding: 0.9rem 0;
+          transition:
+            background    300ms var(--ease-expo),
+            border-color  300ms var(--ease-expo),
+            padding       300ms var(--ease-expo);
         }
 
         .navbar--scrolled {
-          background: rgba(11, 18, 32, 0.82);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
+          background: oklch(0.16 0.012 265 / 0.88);
+          backdrop-filter: blur(18px);
+          -webkit-backdrop-filter: blur(18px);
           border-bottom: 1px solid var(--border-subtle);
-          padding: 0.7rem 0;
+          padding: 0.65rem 0;
         }
 
         .navbar__inner {
@@ -113,15 +116,16 @@ export default function Navbar() {
         .navbar__logo {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
           flex-shrink: 0;
         }
 
-        .navbar__logo svg {
-          display: inline-block;
-          flex-shrink: 0;
-          width: 40px;
-          height: 40px;
+        /* Override Logo inline SVG sizing */
+        .navbar__logo .logo-root {
+          gap: 0.55rem;
+        }
+
+        .navbar__logo .logo__wordmark {
+          font-size: 0.95rem !important;
         }
 
         .navbar__links {
@@ -133,81 +137,75 @@ export default function Navbar() {
         }
 
         .navbar__link {
-          font-size: 0.875rem;
+          font-size: 0.82rem;
           font-weight: 500;
           color: var(--text-muted);
-          transition: color 0.3s ease;
-          position: relative;
+          transition: color 160ms var(--ease-expo);
           white-space: nowrap;
-        }
-
-        .navbar__link::after {
-          content: '';
-          position: absolute;
-          bottom: -4px;
-          left: 0;
-          width: 0;
-          height: 1px;
-          background: var(--accent-indigo-light);
-          transition: width 0.3s var(--ease-out-expo);
         }
 
         .navbar__link:hover {
           color: var(--text-primary);
         }
 
-        .navbar__link:hover::after {
-          width: 100%;
-        }
-
         .navbar__actions {
           display: flex;
           align-items: center;
-          gap: 0.6rem;
+          gap: 0.5rem;
           flex-shrink: 0;
         }
 
         .navbar__signin {
           display: inline-block;
-          font-size: 0.85rem;
+          font-size: 0.82rem;
           font-weight: 500;
-          padding: 0.55rem 1.1rem;
-          border-radius: 8px;
+          padding: 0.45rem 1rem;
+          border-radius: 3px;
           color: var(--text-muted);
           border: 1px solid var(--border-subtle);
-          transition: all 0.3s ease;
           white-space: nowrap;
+          transition:
+            color        160ms var(--ease-expo),
+            border-color 160ms var(--ease-expo),
+            background   160ms var(--ease-expo);
         }
 
         .navbar__signin:hover {
-          color: var(--text-primary);
-          border-color: rgba(148, 163, 184, 0.25);
-          background: rgba(255,255,255,0.03);
+          color: var(--text-secondary);
+          border-color: var(--border-moderate);
+          background: oklch(0.96 0.006 265 / 0.03);
+        }
+
+        .navbar__signin:active {
+          transform: scale(0.97);
         }
 
         .navbar__cta {
           display: inline-block;
-          font-size: 0.85rem;
+          font-size: 0.82rem;
           font-weight: 600;
-          padding: 0.6rem 1.25rem;
-          border-radius: 8px;
-          background: linear-gradient(135deg, #4F46E5, #6366F1);
-          color: #fff;
-          border: 1px solid rgba(99, 102, 241, 0.3);
-          transition: all 0.3s ease;
+          padding: 0.48rem 1.1rem;
+          border-radius: 3px;
+          background: var(--accent-indigo-light);
+          color: oklch(0.96 0.006 265);
           white-space: nowrap;
-          box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+          transition:
+            opacity   160ms var(--ease-expo),
+            transform 160ms var(--ease-expo);
         }
 
         .navbar__cta:hover {
-          box-shadow: 0 0 32px rgba(99, 102, 241, 0.3);
-          transform: translateY(-1px);
+          opacity: 0.88;
+        }
+
+        .navbar__cta:active {
+          transform: scale(0.97);
         }
 
         @media (max-width: 900px) {
-          .navbar__links { display: none; }
+          .navbar__links  { display: none; }
           .navbar__signin { display: none; }
-          .navbar__cta { font-size: 0.8rem; padding: 0.5rem 1rem; }
+          .navbar__cta    { font-size: 0.78rem; padding: 0.45rem 0.9rem; }
         }
       `}</style>
     </nav>

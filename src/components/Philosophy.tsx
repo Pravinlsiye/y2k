@@ -1,35 +1,48 @@
 import { onMount } from "solid-js";
-import { gsap } from "../lib/gsap";
+import { gsap, fadeUp } from "../lib/gsap";
+
+const _directives: unknown[] = [fadeUp];
+void _directives;
+
+const pillars = [
+  {
+    num: "01",
+    title: "Focused",
+    body: "We don't build bloated platforms. Every product is engineered around one clear purpose, nothing more, nothing less.",
+    accent: "var(--accent-indigo-light)",
+    border: "var(--border-moderate)",
+  },
+  {
+    num: "02",
+    title: "Engineered",
+    body: "Precision over assumption. We analyse operational friction deeply before writing a single line of code or soldering a single component.",
+    accent: "var(--accent-teal-light)",
+    border: "var(--border-moderate)",
+  },
+  {
+    num: "03",
+    title: "Scalable",
+    body: "Systems built to grow. From a single deployment to enterprise-wide rollout, architecture is never an afterthought.",
+    accent: "oklch(0.64 0.15 275)",
+    border: "var(--border-moderate)",
+  },
+];
 
 export default function Philosophy() {
   let sectionRef!: HTMLElement;
   let headingRef!: HTMLDivElement;
   let pillarsRef!: HTMLDivElement;
   let quoteRef!: HTMLDivElement;
-  let revealBarRef!: HTMLDivElement;
+  let scrubBarRef!: HTMLDivElement;
 
   onMount(() => {
-    // ── Scrub-reveal on heading words ──
-    const words = headingRef.querySelectorAll(".phil__word");
-    gsap.from(words, {
-      y: "100%",
-      opacity: 0,
-      duration: 1,
-      stagger: 0.06,
-      ease: "power4.out",
-      scrollTrigger: {
-        trigger: headingRef,
-        start: "top 82%",
-        toggleActions: "play none none none",
-      },
-    });
-
-    // ── Animated reveal bar width on scroll ──
+    // Scrub progress bar — purposeful: shows reading progress through the section
     gsap.fromTo(
-      revealBarRef,
-      { width: "0%" },
+      scrubBarRef,
+      { scaleX: 0 },
       {
-        width: "100%",
+        scaleX: 1,
+        transformOrigin: "left",
         ease: "none",
         scrollTrigger: {
           trigger: sectionRef,
@@ -40,161 +53,116 @@ export default function Philosophy() {
       }
     );
 
-    // ── Pillars stagger ──
-    const pillars = pillarsRef.querySelectorAll(".phil__pillar");
-    pillars.forEach((pillar, i) => {
-      gsap.from(pillar, {
-        y: 60,
-        opacity: 0,
-        duration: 0.9,
-        ease: "power3.out",
-        delay: i * 0.05,
-        scrollTrigger: {
-          trigger: pillar,
-          start: "top 88%",
-          toggleActions: "play none none none",
-        },
-      });
-    });
-
-    // ── Quote dramatic entrance ──
-    gsap.from(quoteRef, {
-      scale: 0.94,
+    // Headline lines — opacity + y, no scale, expo.out
+    const lines = headingRef.querySelectorAll(".phil-line");
+    gsap.from(lines, {
       opacity: 0,
-      duration: 1.2,
-      ease: "power3.out",
+      y: 16,
+      duration: 0.7,
+      stagger: 0.1,
+      ease: "expo.out",
       scrollTrigger: {
-        trigger: quoteRef,
+        trigger: headingRef,
         start: "top 85%",
         toggleActions: "play none none none",
       },
     });
 
-    // ── Quote text glow pulse ──
-    const quoteText = quoteRef.querySelector(".phil__quote-text");
-    if (quoteText) {
-      gsap.to(quoteText, {
-        textShadow: "0 0 40px rgba(99,102,241,0.35)",
-        repeat: -1,
-        yoyo: true,
-        duration: 3,
-        ease: "sine.inOut",
+    // Pillars stagger
+    const pillarsEl = pillarsRef.querySelectorAll(".phil-pillar");
+    pillarsEl.forEach((p, i) => {
+      gsap.from(p, {
+        opacity: 0,
+        y: 14,
+        duration: 0.65,
+        ease: "expo.out",
+        delay: i * 0.06,
+        scrollTrigger: {
+          trigger: p,
+          start: "top 89%",
+          toggleActions: "play none none none",
+        },
       });
-    }
-
-    // ── Parallax bg layers ──
-    gsap.to(".phil__bg-orb--1", {
-      y: -80,
-      ease: "none",
-      scrollTrigger: { trigger: sectionRef, start: "top bottom", end: "bottom top", scrub: true },
     });
-    gsap.to(".phil__bg-orb--2", {
-      y: 60,
-      ease: "none",
-      scrollTrigger: { trigger: sectionRef, start: "top bottom", end: "bottom top", scrub: true },
+
+    // Quote — simple opacity entry, no scale pop
+    gsap.from(quoteRef, {
+      opacity: 0,
+      y: 16,
+      duration: 0.8,
+      ease: "expo.out",
+      scrollTrigger: {
+        trigger: quoteRef,
+        start: "top 86%",
+        toggleActions: "play none none none",
+      },
     });
   });
 
-  const pillars = [
-    {
-      num: "01",
-      title: "Focused",
-      body: "We don't build bloated platforms. Every product is engineered around one clear purpose — nothing more, nothing less.",
-      accent: "var(--accent-indigo-light)",
-      bg: "rgba(99,102,241,0.06)",
-      border: "rgba(99,102,241,0.18)",
-    },
-    {
-      num: "02",
-      title: "Engineered",
-      body: "Precision over assumption. We analyse operational friction deeply before writing a single line of code or soldering a single component.",
-      accent: "var(--accent-teal-light)",
-      bg: "rgba(45,212,191,0.05)",
-      border: "rgba(45,212,191,0.16)",
-    },
-    {
-      num: "03",
-      title: "Scalable",
-      body: "Systems built to grow. From a single deployment to enterprise-wide rollout — architecture is never an afterthought.",
-      accent: "#818CF8",
-      bg: "rgba(129,140,248,0.05)",
-      border: "rgba(129,140,248,0.16)",
-    },
-  ];
-
-  const headlineWords = "Focused Technology. Nothing More.".split(" ");
-
   return (
-    <section ref={sectionRef} id="philosophy" class="philosophy section">
+    <section ref={sectionRef} id="philosophy" class="section philosophy">
 
-      {/* Background */}
-      <div class="phil__bg">
-        <div class="phil__bg-orb phil__bg-orb--1" />
-        <div class="phil__bg-orb phil__bg-orb--2" />
-        <div class="phil__bg-grid" />
-        <div class="phil__bg-scanline" />
-      </div>
+      {/* Static grid texture — scoped to this section */}
+      <div class="phil-texture" aria-hidden="true" />
 
-      <div class="container phil__inner">
+      <div class="container phil-inner">
 
-        {/* Top label + scrub bar */}
-        <div class="phil__top">
-          <span class="section-label">Our Philosophy</span>
-          <div ref={revealBarRef} class="phil__scrub-bar" />
+        {/* Header with scrub progress */}
+        <div class="phil-top" use:fadeUp>
+          <p class="phil-top__label">Our Philosophy</p>
+          <div class="phil-top__track">
+            <div ref={scrubBarRef} class="phil-top__bar" />
+          </div>
         </div>
 
-        {/* Headline with overflow clip */}
-        <div ref={headingRef} class="phil__headline-wrap">
-          <h2 class="phil__headline">
-            {headlineWords.map((w) => (
-              <span class="phil__word-wrap">
-                <span class="phil__word">{w}</span>
-              </span>
-            ))}
+        {/* Headline */}
+        <div ref={headingRef} class="phil-headline-wrap">
+          <h2 class="phil-headline">
+            <span class="phil-line phil-line--1">Focused Technology.</span>
+            <span class="phil-line phil-line--2">Nothing More.</span>
           </h2>
-          <p class="phil__subline">
-            We believe focused systems — technology engineered around one clear purpose,
-            executed with precision, scalability, and reliability — outperform everything else.
+          <p class="phil-subline">
+            We believe focused systems outperform everything else: technology
+            engineered around one clear purpose, executed with precision,
+            scalability, and reliability.
           </p>
         </div>
 
-        {/* Pillars */}
-        <div ref={pillarsRef} class="phil__pillars">
+        {/* Pillars — sharp borders, no glass, no backdrop-filter */}
+        <div ref={pillarsRef} class="phil-pillars">
           {pillars.map((p) => (
-            <div
-              class="phil__pillar"
-              style={{
-                background: p.bg,
-                border: `1px solid ${p.border}`,
-              }}
-            >
-              <span class="phil__pillar-num" style={{ color: p.accent }}>{p.num}</span>
-              <div class="phil__pillar-line" style={{ background: p.accent }} />
-              <h3 class="phil__pillar-title" style={{ color: p.accent }}>{p.title}</h3>
-              <p class="phil__pillar-body">{p.body}</p>
+            <div class="phil-pillar">
+              <div class="phil-pillar__top-edge" style={{ background: p.accent }} />
+              <span class="phil-pillar__num" style={{ color: p.accent }}>{p.num}</span>
+              <h3 class="phil-pillar__title">{p.title}</h3>
+              <p class="phil-pillar__body">{p.body}</p>
             </div>
           ))}
         </div>
 
-        {/* Quote */}
-        <div ref={quoteRef} class="phil__quote">
-          <div class="phil__quote-mark">"</div>
-          <blockquote class="phil__quote-text">
+        {/* Quote — editorial, no glass, no glow pulse, no em-dash */}
+        <div ref={quoteRef} class="phil-quote">
+          <p class="phil-quote__text">
             Technology should reduce complexity, not create it.
-          </blockquote>
-          <div class="phil__quote-footer">
-            <span class="phil__quote-dash">—</span>
-            <span class="phil__quote-attr">Y2kSaaS Core Principle</span>
-          </div>
-          <div class="phil__quote-glow" />
+          </p>
+          <p class="phil-quote__attr">
+            <span class="phil-quote__dash" aria-hidden="true">-</span>
+            Y2kSaaS Core Principle
+          </p>
         </div>
 
-        {/* Bottom manifesto strip */}
-        <div class="phil__manifesto">
-          {["Identify Friction", "Engineer Clarity", "Scale the Solution", "Repeat"].map((item, i) => (
+        {/* Process manifesto — plain text row */}
+        <div class="phil-process" use:fadeUp>
+          {["Identify Friction", "Engineer Clarity", "Scale the Solution", "Repeat"].map((step, i, arr) => (
             <>
-              <span class="phil__manifesto-item">{item}</span>
-              {i < 3 && <span class="phil__manifesto-sep">→</span>}
+              <span class="phil-process__step">{step}</span>
+              {i < arr.length - 1 && (
+                <span class="phil-process__sep" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </span>
+              )}
             </>
           ))}
         </div>
@@ -205,286 +173,255 @@ export default function Philosophy() {
         .philosophy {
           position: relative;
           overflow: hidden;
-          background: linear-gradient(180deg, transparent 0%, rgba(99,102,241,0.02) 50%, transparent 100%);
+          background: var(--bg-primary); /* base — no gradient tint */
         }
 
-        /* ── Background ── */
-        .phil__bg {
+        .phil-texture {
           position: absolute;
           inset: 0;
-          pointer-events: none;
-          z-index: 0;
-        }
-
-        .phil__bg-orb {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(120px);
-        }
-
-        .phil__bg-orb--1 {
-          width: 700px; height: 700px;
-          background: radial-gradient(circle, rgba(99,102,241,0.08), transparent 60%);
-          top: -20%; left: -15%;
-        }
-
-        .phil__bg-orb--2 {
-          width: 500px; height: 500px;
-          background: radial-gradient(circle, rgba(45,212,191,0.05), transparent 60%);
-          bottom: -10%; right: -10%;
-        }
-
-        .phil__bg-grid {
-          position: absolute;
-          inset: 0;
-          background:
-            linear-gradient(rgba(99,102,241,0.025) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(99,102,241,0.025) 1px, transparent 1px);
-          background-size: 80px 80px;
-          mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, black, transparent);
-          -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, black, transparent);
-        }
-
-        .phil__bg-scanline {
-          position: absolute;
-          inset: 0;
-          background: repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 2px,
-            rgba(99,102,241,0.012) 2px,
-            rgba(99,102,241,0.012) 4px
-          );
+          background-image:
+            linear-gradient(oklch(0.56 0.21 264 / 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, oklch(0.56 0.21 264 / 0.02) 1px, transparent 1px);
+          background-size: 72px 72px;
+          mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, oklch(0 0 0), transparent 70%);
+          -webkit-mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, oklch(0 0 0), transparent 70%);
           pointer-events: none;
         }
 
-        /* ── Inner ── */
-        .phil__inner {
+        .phil-inner {
           position: relative;
           z-index: 2;
-          max-width: 1100px;
+          max-width: 1000px;
         }
 
-        /* ── Top ── */
-        .phil__top {
+        /* ── Header ── */
+        .phil-top {
           display: flex;
           align-items: center;
-          gap: 2rem;
+          gap: 1.5rem;
           margin-bottom: 3rem;
         }
 
-        .phil__scrub-bar {
-          height: 1px;
+        .phil-top__label {
+          font-size: 0.72rem;
+          font-weight: 500;
+          letter-spacing: 0.07em;
+          color: var(--text-muted);
+          white-space: nowrap;
+        }
+
+        .phil-top__track {
           flex: 1;
-          background: linear-gradient(90deg, var(--accent-indigo-light), var(--accent-teal-light));
+          height: 1px;
+          background: var(--border-subtle);
+          overflow: hidden;
+        }
+
+        .phil-top__bar {
+          height: 100%;
+          background: var(--accent-indigo-light);
+          width: 100%;
+          transform-origin: left;
           opacity: 0.5;
-          border-radius: 1px;
         }
 
         /* ── Headline ── */
-        .phil__headline-wrap {
-          margin-bottom: 4rem;
+        .phil-headline-wrap {
+          margin-bottom: 3.5rem;
         }
 
-        .phil__headline {
-          font-size: clamp(2.8rem, 7vw, 5.5rem);
-          font-weight: 800;
-          line-height: 1.05;
-          letter-spacing: -0.04em;
-          color: var(--text-primary);
-          margin-bottom: 1.5rem;
+        .phil-headline {
           display: flex;
-          flex-wrap: wrap;
-          gap: 0.3em;
+          flex-direction: column;
+          margin-bottom: 1.25rem;
         }
 
-        .phil__word-wrap {
-          overflow: hidden;
-          display: inline-block;
-          line-height: 1.1;
+        .phil-line {
+          display: block;
+          font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+          font-weight: 700;
+          letter-spacing: -0.035em;
+          line-height: 1.04;
         }
 
-        .phil__word {
-          display: inline-block;
-        }
-
-        .phil__subline {
-          font-size: clamp(1rem, 1.6vw, 1.2rem);
-          line-height: 1.75;
+        .phil-line--1 {
           color: var(--text-secondary);
-          max-width: 680px;
         }
 
-        /* ── Pillars ── */
-        .phil__pillars {
+        .phil-line--2 {
+          color: var(--text-primary);
+        }
+
+        .phil-subline {
+          font-size: clamp(0.95rem, 1.35vw, 1.05rem);
+          line-height: 1.65;
+          color: var(--text-muted);
+          max-width: 56ch;
+        }
+
+        /* ── Pillars — no glass, no backdrop-filter, sharp radii ── */
+        .phil-pillars {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 1.5rem;
-          margin-bottom: 4rem;
-        }
-
-        .phil__pillar {
-          border-radius: 20px;
-          padding: 2rem;
-          position: relative;
+          gap: 1px; /* gap via borders, not margin */
+          border: 1px solid var(--border-subtle);
+          border-radius: 3px;
           overflow: hidden;
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s ease;
+          margin-bottom: 3.5rem;
         }
 
-        .phil__pillar:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        .phil-pillar {
+          position: relative;
+          padding: 2rem 1.75rem;
+          background: var(--bg-card);
+          transition: background 200ms var(--ease-expo);
         }
 
-        .phil__pillar-num {
-          font-size: 0.7rem;
-          font-weight: 700;
-          letter-spacing: 0.2em;
+        /* Right border between pillars via box-shadow within the gap */
+        .phil-pillar:not(:last-child) {
+          border-right: 1px solid var(--border-subtle);
+        }
+
+        .phil-pillar:hover {
+          background: var(--bg-secondary);
+        }
+
+        /* Top accent line — NOT a side-stripe, it's a top edge */
+        .phil-pillar__top-edge {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 2px;
+          opacity: 0.6;
+        }
+
+        .phil-pillar__num {
           display: block;
-          margin-bottom: 1rem;
+          font-family: var(--font-mono);
+          font-size: 0.68rem;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          margin-bottom: 1.25rem;
           font-variant-numeric: tabular-nums;
         }
 
-        .phil__pillar-line {
-          width: 32px;
-          height: 2px;
-          border-radius: 1px;
-          margin-bottom: 1rem;
-          opacity: 0.7;
-          transition: width 0.4s var(--ease-out-expo);
-        }
-
-        .phil__pillar:hover .phil__pillar-line {
-          width: 60px;
-        }
-
-        .phil__pillar-title {
-          font-size: 1.5rem;
+        .phil-pillar__title {
+          font-size: 1.2rem;
           font-weight: 700;
           letter-spacing: -0.02em;
+          color: var(--text-primary);
           margin-bottom: 0.75rem;
         }
 
-        .phil__pillar-body {
-          font-size: 0.9rem;
-          line-height: 1.7;
+        .phil-pillar__body {
+          font-size: 0.875rem;
+          line-height: 1.65;
           color: var(--text-muted);
         }
 
-        /* ── Quote ── */
-        .phil__quote {
-          position: relative;
-          padding: 3.5rem 4rem;
-          border-radius: 24px;
-          background: rgba(99,102,241,0.04);
-          border: 1px solid rgba(99,102,241,0.14);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          overflow: hidden;
+        /* ── Quote — editorial, no glass, no glow ── */
+        .phil-quote {
+          padding: 2.5rem 3rem;
+          border: 1px solid var(--border-moderate);
+          border-radius: 3px;
           margin-bottom: 3rem;
-          text-align: center;
+          background: var(--bg-card);
+          position: relative;
         }
 
-        .phil__quote::before {
+        /* Single top-edge accent line — physically motivated */
+        .phil-quote::before {
           content: '';
           position: absolute;
-          inset: 0;
-          border-radius: 24px;
-          padding: 1px;
-          background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(45,212,191,0.2), transparent 60%);
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          pointer-events: none;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: var(--accent-indigo-light);
+          opacity: 0.4;
+          border-radius: 3px 3px 0 0;
         }
 
-        .phil__quote-glow {
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(99,102,241,0.07), transparent);
-          pointer-events: none;
-        }
-
-        .phil__quote-mark {
-          font-size: 8rem;
-          line-height: 0.5;
-          color: rgba(99,102,241,0.15);
-          font-family: Georgia, serif;
-          user-select: none;
-          margin-bottom: 1.5rem;
-        }
-
-        .phil__quote-text {
-          font-size: clamp(1.4rem, 3vw, 2.2rem);
-          font-weight: 700;
-          font-style: normal;
-          color: var(--text-primary);
+        .phil-quote__text {
+          font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+          font-weight: 600;
           line-height: 1.3;
           letter-spacing: -0.02em;
-          position: relative;
-          z-index: 1;
-          max-width: 700px;
-          margin: 0 auto 1.5rem;
+          color: var(--text-primary);
+          margin-bottom: 1rem;
+          max-width: 58ch;
         }
 
-        .phil__quote-footer {
+        .phil-quote__attr {
+          font-size: 0.72rem;
+          font-weight: 500;
+          letter-spacing: 0.07em;
+          color: var(--text-dim);
           display: flex;
           align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
+          gap: 0.4rem;
         }
 
-        .phil__quote-dash {
-          color: var(--accent-indigo-light);
-          font-size: 1.2rem;
-        }
-
-        .phil__quote-attr {
-          font-size: 0.8rem;
-          font-weight: 600;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
+        .phil-quote__dash {
           color: var(--text-dim);
         }
 
-        /* ── Manifesto strip ── */
-        .phil__manifesto {
+        /* ── Process strip ── */
+        .phil-process {
           display: flex;
           align-items: center;
           gap: 1rem;
           flex-wrap: wrap;
-          padding: 1.25rem 2rem;
-          border-radius: 12px;
-          background: rgba(255,255,255,0.02);
+          padding: 1rem 1.5rem;
           border: 1px solid var(--border-subtle);
+          border-radius: 2px;
         }
 
-        .phil__manifesto-item {
-          font-size: 0.8rem;
-          font-weight: 700;
-          letter-spacing: 0.1em;
+        .phil-process__step {
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 0.08em;
           text-transform: uppercase;
           color: var(--text-muted);
         }
 
-        .phil__manifesto-sep {
-          color: var(--accent-indigo-light);
-          font-size: 0.9rem;
-          opacity: 0.6;
+        .phil-process__sep {
+          color: var(--text-dim);
+          display: flex;
+          align-items: center;
+          opacity: 0.5;
         }
 
-        @media (max-width: 900px) {
-          .phil__pillars { grid-template-columns: 1fr; gap: 1rem; }
-          .phil__quote { padding: 2.5rem 2rem; }
-          .phil__quote-mark { font-size: 6rem; }
-          .phil__manifesto { justify-content: center; }
+        .phil-process__sep svg {
+          display: inline-block;
+        }
+
+        @media (max-width: 860px) {
+          .phil-pillars {
+            grid-template-columns: 1fr;
+          }
+
+          .phil-pillar:not(:last-child) {
+            border-right: none;
+            border-bottom: 1px solid var(--border-subtle);
+          }
+
+          .phil-quote {
+            padding: 2rem 1.75rem;
+          }
+
+          .phil-process {
+            justify-content: center;
+          }
         }
 
         @media (max-width: 600px) {
-          .phil__headline { font-size: clamp(2.2rem, 8vw, 3rem); }
-          .phil__quote { padding: 2rem 1.5rem; }
+          .phil-line { font-size: clamp(2rem, 8vw, 2.6rem); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .phil-top__bar { transform: none; }
         }
       `}</style>
     </section>

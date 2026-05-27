@@ -18,12 +18,14 @@ declare module "solid-js" {
   }
 }
 
+const ease = "expo.out";
+
 export function fadeUp(el: Element) {
   gsap.from(el, {
-    y: 60,
+    y: 16,
     opacity: 0,
-    duration: 1,
-    ease: "power3.out",
+    duration: 0.75,
+    ease,
     scrollTrigger: {
       trigger: el,
       start: "top 88%",
@@ -35,8 +37,8 @@ export function fadeUp(el: Element) {
 export function fadeIn(el: Element) {
   gsap.from(el, {
     opacity: 0,
-    duration: 1.2,
-    ease: "power2.out",
+    duration: 0.9,
+    ease,
     scrollTrigger: {
       trigger: el,
       start: "top 90%",
@@ -47,13 +49,13 @@ export function fadeIn(el: Element) {
 
 export function slideLeft(el: Element) {
   gsap.from(el, {
-    x: -80,
+    x: -32,
     opacity: 0,
-    duration: 1,
-    ease: "power3.out",
+    duration: 0.8,
+    ease,
     scrollTrigger: {
       trigger: el,
-      start: "top 85%",
+      start: "top 86%",
       toggleActions: "play none none none",
     },
   });
@@ -61,13 +63,13 @@ export function slideLeft(el: Element) {
 
 export function slideRight(el: Element) {
   gsap.from(el, {
-    x: 80,
+    x: 32,
     opacity: 0,
-    duration: 1,
-    ease: "power3.out",
+    duration: 0.8,
+    ease,
     scrollTrigger: {
       trigger: el,
-      start: "top 85%",
+      start: "top 86%",
       toggleActions: "play none none none",
     },
   });
@@ -78,14 +80,14 @@ export function staggerUp(el: Element) {
     const children = Array.from(el.children);
     if (!children.length) return;
     gsap.from(children, {
-      y: 50,
+      y: 14,
       opacity: 0,
-      duration: 0.8,
-      stagger: 0.15,
-      ease: "power3.out",
+      duration: 0.7,
+      stagger: 0.07,
+      ease,
       scrollTrigger: {
         trigger: el,
-        start: "top 85%",
+        start: "top 86%",
         toggleActions: "play none none none",
       },
     });
@@ -94,10 +96,10 @@ export function staggerUp(el: Element) {
 
 export function scaleIn(el: Element) {
   gsap.from(el, {
-    scale: 0.85,
+    scale: 0.97,
     opacity: 0,
-    duration: 0.9,
-    ease: "power3.out",
+    duration: 0.75,
+    ease,
     scrollTrigger: {
       trigger: el,
       start: "top 88%",
@@ -109,7 +111,7 @@ export function scaleIn(el: Element) {
 export function parallax(el: Element, accessor: () => number) {
   const speed = accessor();
   gsap.to(el, {
-    y: () => speed * 100,
+    y: () => speed * 80,
     ease: "none",
     scrollTrigger: {
       trigger: el,
@@ -125,11 +127,11 @@ export function countUp(el: Element, accessor: () => number) {
   const obj = { val: 0 };
   gsap.to(obj, {
     val: target,
-    duration: 2,
-    ease: "power2.out",
+    duration: 1.6,
+    ease,
     scrollTrigger: {
       trigger: el,
-      start: "top 85%",
+      start: "top 86%",
       toggleActions: "play none none none",
     },
     onUpdate: () => {

@@ -8,71 +8,55 @@ export default function SignIn() {
   const [email, setEmail] = createSignal("");
   const [step, setStep] = createSignal<"email" | "password">("email");
   const [loading, setLoading] = createSignal(false);
-  let cardRef!: HTMLDivElement;
-  let panelRef!: HTMLDivElement;
+  let formPanelRef!: HTMLDivElement;
+  let visualRef!: HTMLDivElement;
 
   onMount(() => {
-    gsap.from(cardRef, {
-      x: -40,
-      opacity: 0,
-      duration: 0.8,
-      ease: "power3.out",
-    });
-    gsap.from(panelRef, {
-      x: 40,
-      opacity: 0,
-      duration: 0.9,
-      ease: "power3.out",
-      delay: 0.1,
-    });
+    const ease = "expo.out";
+    gsap.from(formPanelRef, { x: -24, opacity: 0, duration: 0.75, ease });
+    gsap.from(visualRef,    { x:  24, opacity: 0, duration: 0.9,  ease, delay: 0.1 });
   });
 
   const handleContinue = (e: Event) => {
     e.preventDefault();
     if (!email()) return;
-    if (step() === "email") {
-      setStep("password");
-      return;
-    }
+    if (step() === "email") { setStep("password"); return; }
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigate("/");
-    }, 1200);
+    setTimeout(() => { setLoading(false); navigate("/"); }, 1200);
   };
 
-  const features = [
-    { icon: "M13 10V3L4 14h7v7l9-11h-7z", text: "Intelligent automation & workflows" },
-    { icon: "M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z", text: "Scalable cloud infrastructure" },
-    { icon: "M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z", text: "Connected hardware systems" },
-  ];
-
   return (
-    <div class="signin">
-      {/* Left — form */}
-      <div ref={cardRef} class="signin__form-panel">
-        <a href="/" class="signin__back" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <div class="si">
+
+      {/* Left: form panel */}
+      <div ref={formPanelRef} class="si-form">
+        <a
+          class="si-back"
+          href="/"
+          onClick={(e) => { e.preventDefault(); navigate("/"); }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
           </svg>
           Back
         </a>
 
-        <div class="signin__logo">
-          <Logo size={38} variant="full" animate />
+        <div class="si-brand">
+          <Logo size={32} variant="full" animate={false} />
         </div>
 
-        <h1 class="signin__title">
+        <h1 class="si-title">
           {step() === "email" ? "Get started" : "Welcome back"}
         </h1>
-        <p class="signin__subtitle">
+        <p class="si-subtitle">
           {step() === "email"
             ? "Sign in to your Y2kSaaS account"
             : `Signing in as ${email()}`}
         </p>
 
-        <button class="signin__social signin__social--google" type="button">
-          <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        {/* Google OAuth */}
+        <button class="si-google" type="button">
+          <svg width="17" height="17" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -81,20 +65,18 @@ export default function SignIn() {
           Continue with Google
         </button>
 
-        <div class="signin__divider">
-          <span>OR</span>
-        </div>
+        <div class="si-divider"><span>or</span></div>
 
-        <form class="signin__form" onSubmit={handleContinue}>
-          <div class="signin__field">
-            <svg class="signin__field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <form class="si-form__fields" onSubmit={handleContinue}>
+          <div class="si-field">
+            <svg class="si-field__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
               <polyline points="22,6 12,13 2,6"/>
             </svg>
             <input
               type="email"
-              placeholder="Email"
-              class="signin__input"
+              placeholder="Email address"
+              class="si-field__input"
               value={email()}
               onInput={(e) => setEmail(e.currentTarget.value)}
               required
@@ -103,67 +85,65 @@ export default function SignIn() {
           </div>
 
           {step() === "password" && (
-            <div class="signin__field">
-              <svg class="signin__field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="si-field">
+              <svg class="si-field__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                 <path d="M7 11V7a5 5 0 0110 0v4"/>
               </svg>
               <input
                 type="password"
                 placeholder="Password"
-                class="signin__input"
+                class="si-field__input"
                 required
                 autocomplete="current-password"
               />
             </div>
           )}
 
-          <button type="submit" class="signin__submit" classList={{ "signin__submit--loading": loading() }}>
-            {loading() ? (
-              <span class="signin__spinner" />
-            ) : (
-              step() === "email" ? "Continue" : "Sign In"
-            )}
+          <button
+            type="submit"
+            class="si-submit"
+            classList={{ "si-submit--loading": loading() }}
+          >
+            {loading()
+              ? <span class="si-spinner" aria-label="Loading" />
+              : step() === "email" ? "Continue" : "Sign In"}
           </button>
         </form>
 
-        <p class="signin__terms">
-          By using Y2kSaaS, you agree to our{" "}
+        <p class="si-terms">
+          By continuing, you agree to our{" "}
           <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
         </p>
 
-        <div class="signin__sso">
-          <strong>Sign in with SSO</strong>
-          <p>If you are part of a team, contact your team's administrator for an invite link.</p>
+        <div class="si-sso">
+          <p class="si-sso__title">Sign in with SSO</p>
+          <p class="si-sso__desc">
+            Part of a team? Contact your administrator for an invite link.
+          </p>
         </div>
       </div>
 
-      {/* Right — visual panel */}
-      <div ref={panelRef} class="signin__visual">
-        <div class="signin__visual-bg" />
-        <div class="signin__visual-grid" />
-
-        <div class="signin__visual-content">
-          <div class="signin__visual-globe">
-            <Logo size={200} variant="icon" animate />
+      {/* Right: brand visual */}
+      <div ref={visualRef} class="si-visual">
+        <div class="si-visual__texture" aria-hidden="true" />
+        <div class="si-visual__content">
+          <div class="si-visual__mark">
+            <Logo size={180} variant="icon" animate={false} />
           </div>
-
-          <h2 class="signin__visual-title">
-            Engineering Connected Systems
+          <h2 class="si-visual__title">
+            Hardware. Software.<br />Engineered as one.
           </h2>
-          <p class="signin__visual-sub">
-            HARDWARE &bull; SOFTWARE &bull; INTELLIGENCE
-          </p>
-
-          <ul class="signin__features">
-            {features.map((f) => (
-              <li class="signin__feature">
-                <span class="signin__feature-icon">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d={f.icon}/>
-                  </svg>
-                </span>
-                {f.text}
+          <p class="si-visual__sub">hardware + software + intelligence</p>
+          <ul class="si-visual__list">
+            {[
+              "Intelligent automation and workflows",
+              "Scalable cloud infrastructure",
+              "Connected hardware systems",
+            ].map((item) => (
+              <li class="si-visual__item">
+                <span class="si-visual__dot" aria-hidden="true" />
+                {item}
               </li>
             ))}
           </ul>
@@ -171,214 +151,213 @@ export default function SignIn() {
       </div>
 
       <style>{`
-        .signin {
+        .si {
           display: grid;
-          grid-template-columns: 480px 1fr;
+          grid-template-columns: 440px 1fr;
           min-height: 100vh;
           background: var(--bg-primary);
           font-family: var(--font-sans);
         }
 
-        /* ── LEFT PANEL ── */
-        .signin__form-panel {
+        /* ── Left form panel ── */
+        .si-form {
           display: flex;
           flex-direction: column;
-          padding: 2.5rem 3rem;
-          background: #0d1526;
+          padding: 2.5rem 2.75rem;
+          background: var(--bg-secondary);
           border-right: 1px solid var(--border-subtle);
           position: relative;
           z-index: 2;
         }
 
-        .signin__back {
+        .si-back {
           display: inline-flex;
           align-items: center;
           gap: 0.4rem;
-          font-size: 0.8rem;
+          font-size: 0.78rem;
+          font-weight: 500;
           color: var(--text-muted);
           margin-bottom: 2.5rem;
-          transition: color 0.2s;
           width: fit-content;
+          transition: color 160ms var(--ease-expo);
         }
 
-        .signin__back svg { display: inline-block; }
-        .signin__back:hover { color: var(--text-primary); }
+        .si-back svg { display: inline-block; }
+        .si-back:hover { color: var(--text-primary); }
 
-        .signin__logo {
+        .si-brand {
           display: flex;
           align-items: center;
-          gap: 0.6rem;
           margin-bottom: 2rem;
         }
 
-
-        .signin__title {
-          font-size: 1.6rem;
+        .si-title {
+          font-size: 1.5rem;
           font-weight: 700;
+          letter-spacing: -0.02em;
           color: var(--text-primary);
-          margin-bottom: 0.4rem;
+          margin-bottom: 0.35rem;
         }
 
-        .signin__subtitle {
-          font-size: 0.9rem;
+        .si-subtitle {
+          font-size: 0.875rem;
           color: var(--text-muted);
           margin-bottom: 2rem;
         }
 
-        .signin__social {
+        /* Google button — light surface, contextually appropriate */
+        .si-google {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 0.75rem;
+          gap: 0.65rem;
           width: 100%;
-          padding: 0.75rem 1rem;
-          border-radius: 10px;
-          font-size: 0.9rem;
+          padding: 0.7rem 1rem;
+          border-radius: 3px;
+          font-size: 0.875rem;
           font-weight: 500;
-          cursor: pointer;
-          transition: all 0.25s ease;
           font-family: var(--font-sans);
-        }
-
-        .signin__social svg { display: inline-block; flex-shrink: 0; }
-
-        .signin__social--google {
           background: #fff;
-          color: #111;
-          border: 1px solid #e0e0e0;
+          color: oklch(0.2 0 0);
+          border: 1px solid #ddd;
+          cursor: pointer;
+          transition:
+            background 160ms var(--ease-expo),
+            border-color 160ms var(--ease-expo);
         }
 
-        .signin__social--google:hover {
-          background: #f5f5f5;
-          box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-        }
+        .si-google svg { display: inline-block; flex-shrink: 0; }
+        .si-google:hover { background: #f4f4f4; }
+        .si-google:active { transform: scale(0.98); }
 
-        .signin__divider {
+        .si-divider {
           display: flex;
           align-items: center;
           gap: 1rem;
-          margin: 1.5rem 0;
+          margin: 1.25rem 0;
           color: var(--text-dim);
-          font-size: 0.8rem;
+          font-size: 0.75rem;
         }
 
-        .signin__divider::before,
-        .signin__divider::after {
+        .si-divider::before,
+        .si-divider::after {
           content: '';
           flex: 1;
           height: 1px;
           background: var(--border-subtle);
         }
 
-        .signin__form {
+        /* Form fields */
+        .si-form__fields {
           display: flex;
           flex-direction: column;
-          gap: 0.75rem;
+          gap: 0.65rem;
         }
 
-        .signin__field {
+        .si-field {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
-          background: rgba(255,255,255,0.03);
+          gap: 0.7rem;
+          background: var(--bg-card);
           border: 1px solid var(--border-subtle);
-          border-radius: 10px;
-          padding: 0 1rem;
-          transition: border-color 0.25s;
+          border-radius: 3px;
+          padding: 0 0.9rem;
+          transition: border-color 160ms var(--ease-expo);
         }
 
-        .signin__field:focus-within {
-          border-color: rgba(99,102,241,0.5);
-          background: rgba(99,102,241,0.04);
+        .si-field:focus-within {
+          border-color: oklch(0.56 0.21 264 / 0.45);
         }
 
-        .signin__field-icon {
+        .si-field__icon {
           display: inline-block;
           color: var(--text-dim);
           flex-shrink: 0;
         }
 
-        .signin__input {
+        .si-field__input {
           flex: 1;
           background: none;
           border: none;
           outline: none;
-          padding: 0.85rem 0;
-          font-size: 0.9rem;
+          padding: 0.8rem 0;
+          font-size: 0.875rem;
           font-family: var(--font-sans);
           color: var(--text-primary);
         }
 
-        .signin__input::placeholder { color: var(--text-dim); }
+        .si-field__input::placeholder { color: var(--text-dim); }
 
-        .signin__submit {
+        /* Submit button — solid fill */
+        .si-submit {
           width: 100%;
-          padding: 0.875rem;
-          border-radius: 10px;
-          background: linear-gradient(135deg, #4F46E5, #6366F1);
-          color: #fff;
-          font-size: 0.9rem;
+          padding: 0.8rem;
+          border-radius: 3px;
+          background: var(--accent-indigo-light);
+          color: oklch(0.96 0.006 265);
+          font-size: 0.875rem;
           font-weight: 600;
           font-family: var(--font-sans);
           cursor: pointer;
           border: none;
-          transition: all 0.25s ease;
-          margin-top: 0.25rem;
           display: flex;
           align-items: center;
           justify-content: center;
-          min-height: 46px;
+          min-height: 44px;
+          margin-top: 0.25rem;
+          transition:
+            opacity   160ms var(--ease-expo),
+            transform 160ms var(--ease-expo);
         }
 
-        .signin__submit:hover:not(.signin__submit--loading) {
-          box-shadow: 0 0 30px rgba(99,102,241,0.3);
-          transform: translateY(-1px);
-        }
+        .si-submit:hover:not(.si-submit--loading) { opacity: 0.88; }
+        .si-submit:active:not(.si-submit--loading) { transform: scale(0.97); }
 
-        .signin__spinner {
-          width: 18px;
-          height: 18px;
-          border: 2px solid rgba(255,255,255,0.3);
-          border-top-color: #fff;
+        /* Spinner — uses existing rotateGlobe keyframe */
+        .si-spinner {
+          width: 17px;
+          height: 17px;
+          border: 2px solid oklch(0.96 0.006 265 / 0.3);
+          border-top-color: oklch(0.96 0.006 265);
           border-radius: 50%;
           animation: rotateGlobe 0.7s linear infinite;
           display: inline-block;
         }
 
-        .signin__terms {
-          font-size: 0.75rem;
+        .si-terms {
+          font-size: 0.72rem;
           color: var(--text-dim);
           margin-top: 1.25rem;
           line-height: 1.5;
         }
 
-        .signin__terms a {
+        .si-terms a {
           color: var(--text-muted);
           text-decoration: underline;
           text-underline-offset: 2px;
         }
 
-        .signin__sso {
-          margin-top: 2rem;
-          padding-top: 1.5rem;
+        .si-sso {
+          margin-top: auto;
+          padding-top: 1.75rem;
           border-top: 1px solid var(--border-subtle);
         }
 
-        .signin__sso strong {
-          display: block;
-          font-size: 0.85rem;
+        .si-sso__title {
+          font-size: 0.82rem;
+          font-weight: 600;
           color: var(--text-secondary);
-          margin-bottom: 0.3rem;
+          margin-bottom: 0.25rem;
         }
 
-        .signin__sso p {
-          font-size: 0.8rem;
+        .si-sso__desc {
+          font-size: 0.78rem;
           color: var(--text-dim);
           line-height: 1.5;
         }
 
-        /* ── RIGHT PANEL ── */
-        .signin__visual {
+        /* ── Right visual ── */
+        .si-visual {
           position: relative;
           display: flex;
           align-items: center;
@@ -386,90 +365,80 @@ export default function SignIn() {
           overflow: hidden;
         }
 
-        .signin__visual-bg {
+        /* Structural grid — no radial glow blobs */
+        .si-visual__texture {
           position: absolute;
           inset: 0;
-          background: radial-gradient(ellipse 80% 70% at 60% 40%, rgba(99,102,241,0.12), transparent 60%),
-                      radial-gradient(ellipse 50% 50% at 20% 80%, rgba(45,212,191,0.06), transparent 50%);
+          background-image:
+            linear-gradient(oklch(0.56 0.21 264 / 0.025) 1px, transparent 1px),
+            linear-gradient(90deg, oklch(0.56 0.21 264 / 0.025) 1px, transparent 1px);
+          background-size: 56px 56px;
+          pointer-events: none;
         }
 
-        .signin__visual-grid {
-          position: absolute;
-          inset: 0;
-          background:
-            linear-gradient(rgba(99,102,241,0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(99,102,241,0.05) 1px, transparent 1px);
-          background-size: 50px 50px;
-        }
-
-        .signin__visual-content {
+        .si-visual__content {
           position: relative;
           z-index: 2;
           text-align: center;
           padding: 3rem;
         }
 
-        .signin__visual-globe {
+        .si-visual__mark {
           display: flex;
           justify-content: center;
           margin-bottom: 2rem;
-          animation: float 6s ease-in-out infinite;
-          filter: drop-shadow(0 0 40px rgba(99,102,241,0.18));
+          opacity: 0.75;
         }
 
-        .signin__visual-title {
-          font-size: clamp(1.4rem, 2.5vw, 2rem);
+        .si-visual__title {
+          font-size: clamp(1.3rem, 2.2vw, 1.8rem);
           font-weight: 700;
+          line-height: 1.15;
+          letter-spacing: -0.02em;
           color: var(--text-primary);
-          line-height: 1.2;
-          margin-bottom: 0.75rem;
+          margin-bottom: 0.6rem;
         }
 
-        .signin__visual-sub {
-          font-size: 0.72rem;
-          font-weight: 600;
-          letter-spacing: 0.25em;
-          color: var(--text-muted);
-          margin-bottom: 2.5rem;
+        .si-visual__sub {
+          font-size: 0.68rem;
+          font-weight: 500;
+          letter-spacing: 0.12em;
+          color: var(--text-dim);
+          margin-bottom: 2rem;
         }
 
-        .signin__features {
+        .si-visual__list {
           list-style: none;
           display: flex;
           flex-direction: column;
-          gap: 0.9rem;
+          gap: 0.75rem;
           text-align: left;
-          max-width: 280px;
+          max-width: 260px;
           margin: 0 auto;
         }
 
-        .signin__feature {
+        .si-visual__item {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
-          font-size: 0.875rem;
-          color: var(--text-secondary);
+          gap: 0.65rem;
+          font-size: 0.85rem;
+          color: var(--text-muted);
         }
 
-        .signin__feature-icon {
-          width: 28px;
-          height: 28px;
-          border-radius: 8px;
-          background: rgba(99,102,241,0.12);
-          border: 1px solid rgba(99,102,241,0.2);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--accent-indigo-light);
+        /* Small square dot — engineered, not circular */
+        .si-visual__dot {
+          width: 4px;
+          height: 4px;
+          border-radius: 1px;
+          background: var(--accent-indigo-light);
           flex-shrink: 0;
+          opacity: 0.7;
         }
-
-        .signin__feature-icon svg { display: inline-block; }
 
         @media (max-width: 860px) {
-          .signin { grid-template-columns: 1fr; }
-          .signin__visual { display: none; }
-          .signin__form-panel { padding: 2rem 1.5rem; }
+          .si { grid-template-columns: 1fr; }
+          .si-visual { display: none; }
+          .si-form { padding: 2rem 1.5rem; }
         }
       `}</style>
     </div>

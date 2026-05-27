@@ -8,73 +8,69 @@ export default function RequestDemo() {
   const [submitted, setSubmitted] = createSignal(false);
   const [loading, setLoading] = createSignal(false);
   let cardRef!: HTMLDivElement;
+  let infoRef!: HTMLDivElement;
 
   onMount(() => {
-    gsap.from(cardRef, {
-      y: 40,
-      opacity: 0,
-      duration: 0.9,
-      ease: "power3.out",
-    });
+    const ease = "expo.out";
+    gsap.from(infoRef, { opacity: 0, y: 14, duration: 0.7,  ease, delay: 0.2 });
+    gsap.from(cardRef, { opacity: 0, y: 14, duration: 0.75, ease, delay: 0.35 });
   });
 
   const handleSubmit = (e: Event) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const data = new FormData(form);
-    const name = `${data.get("first") ?? ""} ${data.get("last") ?? ""}`.trim();
-    const company = String(data.get("company") ?? "");
-    const size = String(data.get("size") ?? "");
-    const message = String(data.get("message") ?? "");
-    const userEmail = String(data.get("email") ?? "");
+    const name      = `${data.get("first") ?? ""} ${data.get("last") ?? ""}`.trim();
+    const company   = String(data.get("company")   ?? "");
+    const size      = String(data.get("size")      ?? "");
+    const message   = String(data.get("message")   ?? "");
+    const userEmail = String(data.get("email")     ?? "");
 
     const body = `Hi Y2kSaaS team,\n\nI'd like to schedule a product demo.\n\nName: ${name}\nCompany: ${company}\nWork Email: ${userEmail}\nTeam size: ${size}\nWhat I'd like to see:\n${message}\n\nLooking forward to hearing from you.`;
     const mailto = `mailto:sales@y2ksaas.com?subject=${encodeURIComponent("Demo Request — Y2kSaaS")}&body=${encodeURIComponent(body)}`;
 
     setLoading(true);
-    setTimeout(() => {
-      window.location.href = mailto;
-      setLoading(false);
-      setSubmitted(true);
-    }, 600);
+    setTimeout(() => { window.location.href = mailto; setLoading(false); setSubmitted(true); }, 600);
   };
 
   return (
-    <div class="demo">
-      <div class="demo__bg-glow demo__bg-glow--1" />
-      <div class="demo__bg-glow demo__bg-glow--2" />
-      <div class="demo__grid" />
+    <div class="rd">
 
-      {/* Back nav */}
-      <nav class="demo__nav">
-        <div class="container demo__nav-inner">
-          <a class="demo__nav-logo" href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
-            <Logo size={28} variant="full" />
+      <nav class="rd-nav">
+        <div class="container rd-nav__inner">
+          <a class="rd-nav__logo" href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
+            <Logo size={26} variant="full" animate={false} />
           </a>
-          <a class="demo__nav-back" href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }}>← Home</a>
+          <a class="rd-nav__back" href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Home
+          </a>
         </div>
       </nav>
 
-      <div class="demo__content container">
-        {/* Left */}
-        <div class="demo__info">
-          <span class="section-label">Request a Demo</span>
-          <h1 class="demo__title">See Y2kSaaS in Action</h1>
-          <p class="demo__desc">
-            Get a personalised walkthrough of our connected hardware and software
-            systems — tailored to your operational challenges.
+      <div class="container rd-layout">
+
+        {/* Left: positioning */}
+        <div ref={infoRef} class="rd-info">
+          <p class="rd-info__label">Request a Demo</p>
+          <h1 class="rd-info__title">See Y2kSaaS<br />in action.</h1>
+          <p class="rd-info__desc">
+            A 30-minute walkthrough of our connected hardware and software
+            systems, tailored to your operational challenges.
           </p>
 
-          <ul class="demo__benefits">
+          <ul class="rd-benefits">
             {[
-              "30-minute live demo with an engineer",
+              "Live demo with an engineer",
               "Tailored to your industry and use case",
               "No commitment, no sales pressure",
               "Q&A session included",
             ].map((b) => (
-              <li class="demo__benefit">
-                <span class="demo__check">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <li class="rd-benefit">
+                <span class="rd-benefit__mark" aria-hidden="true">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
                 </span>
@@ -83,72 +79,80 @@ export default function RequestDemo() {
             ))}
           </ul>
 
-          <div class="demo__or-talk">
-            <span>Prefer to talk now?</span>
-            <a href="/talk" onClick={(e) => { e.preventDefault(); navigate("/talk"); }} class="demo__talk-link">
-              Talk with an Expert →
+          <p class="rd-alt">
+            Prefer to talk now?{" "}
+            <a
+              href="/talk"
+              class="rd-alt__link"
+              onClick={(e) => { e.preventDefault(); navigate("/talk"); }}
+            >
+              Talk to an engineer
             </a>
-          </div>
+          </p>
         </div>
 
-        {/* Right — form card */}
-        <div ref={cardRef} class="demo__card glass-card">
+        {/* Right: form */}
+        <div ref={cardRef} class="rd-card">
           {submitted() ? (
-            <div class="demo__success">
-              <div class="demo__success-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="rd-success">
+              <span class="rd-success__mark" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="20 6 9 17 4 12"/>
                 </svg>
-              </div>
-              <h2>Demo Requested!</h2>
-              <p>We'll reach out within 1 business day to schedule your session.</p>
-              <button class="demo__submit" onClick={() => navigate("/")} style={{ "margin-top": "1.5rem" }}>
+              </span>
+              <h2 class="rd-success__title">Demo Requested</h2>
+              <p class="rd-success__sub">We'll reach out within one business day to schedule your session.</p>
+              <button class="rd-submit" style={{ "margin-top": "1.25rem" }} onClick={() => navigate("/")}>
                 Back to Home
               </button>
             </div>
           ) : (
-            <form class="demo__form" onSubmit={handleSubmit}>
-              <h2 class="demo__form-title">Book Your Demo</h2>
+            <form class="rd-form" onSubmit={handleSubmit}>
+              <h2 class="rd-form__title">Book your demo</h2>
 
-              <div class="demo__row">
-                <div class="demo__field">
-                  <label class="demo__label">First Name</label>
-                  <input class="demo__input" type="text" name="first" placeholder="Alex" required />
+              <div class="rd-row">
+                <div class="rd-field">
+                  <label class="rd-label">First Name</label>
+                  <input class="rd-input" type="text" name="first" placeholder="Alex" required />
                 </div>
-                <div class="demo__field">
-                  <label class="demo__label">Last Name</label>
-                  <input class="demo__input" type="text" name="last" placeholder="Johnson" required />
+                <div class="rd-field">
+                  <label class="rd-label">Last Name</label>
+                  <input class="rd-input" type="text" name="last" placeholder="Johnson" required />
                 </div>
               </div>
 
-              <div class="demo__field">
-                <label class="demo__label">Work Email</label>
-                <input class="demo__input" type="email" name="email" placeholder="alex@company.com" required />
+              <div class="rd-field">
+                <label class="rd-label">Work Email</label>
+                <input class="rd-input" type="email" name="email" placeholder="alex@company.com" required />
               </div>
 
-              <div class="demo__field">
-                <label class="demo__label">Company</label>
-                <input class="demo__input" type="text" name="company" placeholder="Your Company" required />
+              <div class="rd-field">
+                <label class="rd-label">Company</label>
+                <input class="rd-input" type="text" name="company" placeholder="Company name" required />
               </div>
 
-              <div class="demo__field">
-                <label class="demo__label">Team Size</label>
-                <select class="demo__input demo__select" name="size" required>
+              <div class="rd-field">
+                <label class="rd-label">Team Size</label>
+                <select class="rd-input rd-select" name="size" required>
                   <option value="" disabled selected>Select size</option>
-                  <option>1 – 10</option>
-                  <option>11 – 50</option>
-                  <option>51 – 200</option>
+                  <option>1 - 10</option>
+                  <option>11 - 50</option>
+                  <option>51 - 200</option>
                   <option>200+</option>
                 </select>
               </div>
 
-              <div class="demo__field">
-                <label class="demo__label">What are you looking to solve?</label>
-                <textarea class="demo__input demo__textarea" name="message" placeholder="Describe your challenge or use case..." rows="3" />
+              <div class="rd-field">
+                <label class="rd-label">What are you looking to solve?</label>
+                <textarea class="rd-input rd-textarea" name="message" placeholder="Describe your challenge or use case..." rows="3" />
               </div>
 
-              <button type="submit" class="demo__submit" classList={{ "demo__submit--loading": loading() }}>
-                {loading() ? <span class="demo__spinner" /> : "Request Demo"}
+              <button
+                type="submit"
+                class="rd-submit"
+                classList={{ "rd-submit--loading": loading() }}
+              >
+                {loading() ? <span class="rd-spinner" aria-label="Sending" /> : "Request Demo"}
               </button>
             </form>
           )}
@@ -156,118 +160,110 @@ export default function RequestDemo() {
       </div>
 
       <style>{`
-        .demo {
+        .rd {
           min-height: 100vh;
           background: var(--bg-primary);
           color: var(--text-primary);
           font-family: var(--font-sans);
-          position: relative;
-          overflow: hidden;
         }
 
-        .demo__bg-glow {
-          position: fixed;
-          border-radius: 50%;
-          filter: blur(120px);
-          pointer-events: none;
-          z-index: 0;
-        }
-
-        .demo__bg-glow--1 {
-          width: 500px; height: 500px;
-          background: radial-gradient(circle, rgba(99,102,241,0.1), transparent);
-          top: -100px; left: -100px;
-        }
-
-        .demo__bg-glow--2 {
-          width: 400px; height: 400px;
-          background: radial-gradient(circle, rgba(45,212,191,0.06), transparent);
-          bottom: -100px; right: -100px;
-        }
-
-        .demo__grid {
-          position: fixed;
-          inset: 0;
-          background:
-            linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
-          background-size: 60px 60px;
-          pointer-events: none;
-          z-index: 0;
-        }
-
-        .demo__nav {
-          position: relative;
-          z-index: 10;
-          padding: 1rem 0;
+        /* Nav */
+        .rd-nav {
+          padding: 0.9rem 0;
           border-bottom: 1px solid var(--border-subtle);
         }
 
-        .demo__nav-inner {
+        .rd-nav__inner {
           display: flex;
           align-items: center;
           justify-content: space-between;
         }
 
-        .demo__nav-logo { display: flex; align-items: center; }
+        .rd-nav__logo { display: flex; align-items: center; }
 
-        .demo__nav-back {
-          font-size: 0.85rem;
+        .rd-nav__back {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4rem;
+          font-size: 0.82rem;
+          font-weight: 500;
           color: var(--text-muted);
-          transition: color 0.2s;
+          transition: color 160ms var(--ease-expo);
         }
 
-        .demo__nav-back:hover { color: var(--text-primary); }
+        .rd-nav__back svg { display: inline-block; }
+        .rd-nav__back:hover { color: var(--text-primary); }
 
-        .demo__content {
-          position: relative;
-          z-index: 2;
+        /* Two-column layout */
+        .rd-layout {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 5rem;
+          gap: clamp(3rem, 6vw, 6rem);
           align-items: start;
-          padding-top: clamp(50px, 8vh, 80px);
+          padding-top: clamp(48px, 8vh, 80px);
           padding-bottom: 4rem;
         }
 
-        .demo__title {
-          font-size: clamp(2rem, 4vw, 3rem);
-          font-weight: 800;
-          line-height: 1.1;
-          letter-spacing: -0.02em;
-          margin-bottom: 1rem;
-        }
-
-        .demo__desc {
-          font-size: 1rem;
-          line-height: 1.7;
-          color: var(--text-secondary);
-          margin-bottom: 2rem;
-          max-width: 440px;
-        }
-
-        .demo__benefits {
-          list-style: none;
-          display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
-          margin-bottom: 2.5rem;
-        }
-
-        .demo__benefit {
+        /* Info side */
+        .rd-info__label {
           display: flex;
           align-items: center;
           gap: 0.75rem;
+          font-size: 0.72rem;
+          font-weight: 500;
+          letter-spacing: 0.07em;
+          color: var(--text-muted);
+          margin-bottom: 1.25rem;
+        }
+
+        .rd-info__label::before {
+          content: '';
+          display: block;
+          width: 18px;
+          height: 1px;
+          background: var(--text-dim);
+        }
+
+        .rd-info__title {
+          font-size: clamp(1.9rem, 3.8vw, 3rem);
+          font-weight: 700;
+          line-height: 1.08;
+          letter-spacing: -0.025em;
+          color: var(--text-primary);
+          margin-bottom: 1rem;
+        }
+
+        .rd-info__desc {
           font-size: 0.9rem;
+          line-height: 1.65;
+          color: var(--text-muted);
+          max-width: 44ch;
+          margin-bottom: 1.75rem;
+        }
+
+        .rd-benefits {
+          list-style: none;
+          display: flex;
+          flex-direction: column;
+          gap: 0.65rem;
+          margin-bottom: 2rem;
+        }
+
+        .rd-benefit {
+          display: flex;
+          align-items: center;
+          gap: 0.65rem;
+          font-size: 0.875rem;
           color: var(--text-secondary);
         }
 
-        .demo__check {
-          width: 22px;
-          height: 22px;
-          border-radius: 50%;
-          background: rgba(99,102,241,0.12);
-          border: 1px solid rgba(99,102,241,0.2);
+        /* Square check mark — engineered aesthetic */
+        .rd-benefit__mark {
+          width: 20px;
+          height: 20px;
+          border-radius: 2px;
+          background: oklch(0.56 0.21 264 / 0.1);
+          border: 1px solid oklch(0.56 0.21 264 / 0.2);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -275,146 +271,148 @@ export default function RequestDemo() {
           flex-shrink: 0;
         }
 
-        .demo__check svg { display: inline-block; }
+        .rd-benefit__mark svg { display: inline-block; }
 
-        .demo__or-talk {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          font-size: 0.85rem;
+        .rd-alt {
+          font-size: 0.82rem;
           color: var(--text-dim);
         }
 
-        .demo__talk-link {
+        .rd-alt__link {
           color: var(--accent-indigo-light);
-          font-weight: 600;
-          transition: color 0.2s;
+          font-weight: 500;
+          transition: color 160ms var(--ease-expo);
         }
 
-        .demo__talk-link:hover { color: var(--text-primary); }
+        .rd-alt__link:hover { color: var(--text-secondary); }
 
-        .demo__card {
-          border-radius: 20px;
-          padding: 2.5rem;
+        /* Form card — solid surface, no glass */
+        .rd-card {
+          background: var(--bg-card);
+          border: 1px solid var(--border-moderate);
+          border-radius: 3px;
+          padding: 2.25rem;
         }
 
-        .demo__form-title {
-          font-size: 1.3rem;
+        .rd-form__title {
+          font-size: 1.15rem;
           font-weight: 700;
-          margin-bottom: 1.75rem;
+          letter-spacing: -0.015em;
+          margin-bottom: 1.5rem;
+          color: var(--text-primary);
         }
 
-        .demo__form {
+        .rd-form {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 0.9rem;
         }
 
-        .demo__row {
+        .rd-row {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 0.75rem;
+          gap: 0.65rem;
         }
 
-        .demo__field {
+        .rd-field {
           display: flex;
           flex-direction: column;
-          gap: 0.35rem;
+          gap: 0.3rem;
         }
 
-        .demo__label {
-          font-size: 0.75rem;
+        .rd-label {
+          font-size: 0.72rem;
           font-weight: 600;
           color: var(--text-muted);
-          letter-spacing: 0.03em;
+          letter-spacing: 0.04em;
         }
 
-        .demo__input {
-          background: rgba(255,255,255,0.03);
+        .rd-input {
+          background: var(--bg-secondary);
           border: 1px solid var(--border-subtle);
-          border-radius: 10px;
-          padding: 0.75rem 1rem;
-          font-size: 0.9rem;
+          border-radius: 3px;
+          padding: 0.65rem 0.9rem;
+          font-size: 0.875rem;
           font-family: var(--font-sans);
           color: var(--text-primary);
           outline: none;
-          transition: border-color 0.25s;
           width: 100%;
+          transition: border-color 160ms var(--ease-expo);
         }
 
-        .demo__input:focus {
-          border-color: rgba(99,102,241,0.5);
-          background: rgba(99,102,241,0.04);
+        .rd-input:focus {
+          border-color: oklch(0.56 0.21 264 / 0.45);
         }
 
-        .demo__input::placeholder { color: var(--text-dim); }
+        .rd-input::placeholder { color: var(--text-dim); }
 
-        .demo__select {
+        .rd-select {
           cursor: pointer;
           appearance: none;
           -webkit-appearance: none;
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748B' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
           background-repeat: no-repeat;
-          background-position: right 1rem center;
-          padding-right: 2.5rem;
+          background-position: right 0.9rem center;
+          padding-right: 2.25rem;
         }
 
-        .demo__select option { background: #0d1526; color: var(--text-primary); }
+        .rd-select option { background: var(--bg-secondary); color: var(--text-primary); }
 
-        .demo__textarea {
+        .rd-textarea {
           resize: vertical;
           min-height: 80px;
         }
 
-        .demo__submit {
+        /* Submit button — solid fill */
+        .rd-submit {
           width: 100%;
-          padding: 0.875rem;
-          border-radius: 10px;
-          background: linear-gradient(135deg, #4F46E5, #6366F1);
-          color: #fff;
-          font-size: 0.92rem;
+          padding: 0.75rem;
+          border-radius: 3px;
+          background: var(--accent-indigo-light);
+          color: oklch(0.96 0.006 265);
+          font-size: 0.875rem;
           font-weight: 600;
           font-family: var(--font-sans);
           cursor: pointer;
           border: none;
-          transition: all 0.25s ease;
           display: flex;
           align-items: center;
           justify-content: center;
-          min-height: 48px;
-          margin-top: 0.25rem;
+          min-height: 44px;
+          margin-top: 0.2rem;
+          transition:
+            opacity   160ms var(--ease-expo),
+            transform 160ms var(--ease-expo);
         }
 
-        .demo__submit:hover:not(.demo__submit--loading) {
-          box-shadow: 0 0 30px rgba(99,102,241,0.3);
-          transform: translateY(-1px);
-        }
+        .rd-submit:hover:not(.rd-submit--loading) { opacity: 0.88; }
+        .rd-submit:active:not(.rd-submit--loading) { transform: scale(0.97); }
 
-        .demo__spinner {
-          width: 18px;
-          height: 18px;
-          border: 2px solid rgba(255,255,255,0.3);
-          border-top-color: #fff;
+        .rd-spinner {
+          width: 17px;
+          height: 17px;
+          border: 2px solid oklch(0.96 0.006 265 / 0.3);
+          border-top-color: oklch(0.96 0.006 265);
           border-radius: 50%;
           animation: rotateGlobe 0.7s linear infinite;
           display: inline-block;
         }
 
-        .demo__success {
-          text-align: center;
-          padding: 2rem 1rem;
+        /* Success state */
+        .rd-success {
           display: flex;
           flex-direction: column;
-          align-items: center;
-          gap: 0.75rem;
+          align-items: flex-start;
+          gap: 0.6rem;
+          padding: 1rem 0;
         }
 
-        .demo__success-icon {
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
-          background: rgba(45,212,191,0.1);
-          border: 2px solid rgba(45,212,191,0.3);
+        .rd-success__mark {
+          width: 36px;
+          height: 36px;
+          border-radius: 3px;
+          background: oklch(0.74 0.14 185 / 0.12);
+          border: 1px solid oklch(0.74 0.14 185 / 0.25);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -422,23 +420,25 @@ export default function RequestDemo() {
           margin-bottom: 0.5rem;
         }
 
-        .demo__success-icon svg { display: inline-block; }
+        .rd-success__mark svg { display: inline-block; }
 
-        .demo__success h2 {
-          font-size: 1.4rem;
+        .rd-success__title {
+          font-size: 1.2rem;
           font-weight: 700;
+          color: var(--text-primary);
+          letter-spacing: -0.015em;
         }
 
-        .demo__success p {
+        .rd-success__sub {
+          font-size: 0.875rem;
           color: var(--text-muted);
-          font-size: 0.9rem;
-          max-width: 280px;
-          line-height: 1.6;
+          line-height: 1.55;
+          max-width: 36ch;
         }
 
         @media (max-width: 860px) {
-          .demo__content { grid-template-columns: 1fr; gap: 3rem; }
-          .demo__row { grid-template-columns: 1fr; }
+          .rd-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+          .rd-row    { grid-template-columns: 1fr; }
         }
       `}</style>
     </div>

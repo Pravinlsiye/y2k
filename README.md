@@ -1,28 +1,56 @@
-## Usage
+# Y2kSaaS
+
+Marketing site for **Y2kSaaS** — hardware, software, and intelligence for connected systems in the real world.
+
+Built with [SolidJS](https://solidjs.com), [Vite](https://vite.dev), TypeScript, and [GSAP](https://gsap.com) scroll/entrance animations.
+
+## Getting started
 
 ```bash
-$ npm install # or pnpm install or yarn install
+npm install
+npm run dev
 ```
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+Open [http://localhost:5173](http://localhost:5173).
 
-## Available Scripts
+## Scripts
 
-In the project directory, you can run:
+| Command | Description |
+|---|---|
+| `npm run dev` | Start dev server |
+| `npm run build` | Type-check and build to `dist/` |
+| `npm run preview` | Serve production build locally |
 
-### `npm run dev`
+## Routes
 
-Runs the app in the development mode.<br>
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+| Path | Page |
+|---|---|
+| `/` | Landing — Hero, About, Services, Philosophy, Vision & Mission, Why We Exist |
+| `/signin` | Sign in |
+| `/careers` | Careers and open roles |
+| `/demo` | Request a demo |
+| `/talk` | Talk with an expert |
 
-### `npm run build`
+CTA forms use `mailto:` templates defined in `src/lib/mail.ts`.
 
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
+## Project structure
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+```
+src/
+├── components/   # Landing sections, Navbar, Footer, Logo
+├── pages/        # Route-level pages
+├── lib/          # GSAP setup, mail templates
+└── styles/       # Global CSS and animations
+```
 
 ## Deployment
 
-Learn more about deploying your application with the [documentations](https://vite.dev/guide/static-deploy.html)
+GitHub Actions (`.github/workflows/deploy.yml`) builds and deploys to **GitHub Pages** on push to `main`.
+
+The workflow sets `VITE_BASE` to `/<repo-name>/` so assets resolve correctly on Pages. Local dev uses `/` by default via `vite.config.ts`.
+
+After enabling GitHub Pages (source: GitHub Actions), the site is available at:
+
+```
+https://<username>.github.io/<repo-name>/
+```

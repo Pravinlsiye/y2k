@@ -23,20 +23,16 @@ const channels = [
     desc: "Join our engineering team",
     cta: "Send an Intro",
     href: MAIL.sendIntro,
-    accent: "rgba(99,102,241,0.15)",
-    border: "rgba(99,102,241,0.25)",
-    iconPath: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z",
+    accentColor: "var(--accent-indigo-light)",
   },
   {
     key: "sales",
     label: "Sales",
     email: "sales@y2ksaas.com",
-    desc: "Enterprise inquiries & demos",
+    desc: "Enterprise inquiries and demos",
     cta: "Request Demo",
     href: MAIL.requestDemo,
-    accent: "rgba(45,212,191,0.12)",
-    border: "rgba(45,212,191,0.22)",
-    iconPath: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+    accentColor: "var(--accent-teal-light)",
   },
   {
     key: "support",
@@ -45,112 +41,113 @@ const channels = [
     desc: "Technical assistance",
     cta: "Get Help",
     href: MAIL.support,
-    accent: "rgba(129,140,248,0.1)",
-    border: "rgba(129,140,248,0.2)",
-    iconPath: "M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z",
+    accentColor: "oklch(0.64 0.15 275)",
   },
 ];
 
 export default function Footer() {
   const navigate = useNavigate();
   let sectionRef!: HTMLElement;
+  let channelsRef!: HTMLDivElement;
 
   const scrollTo = (href: string) => {
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
   };
 
   onMount(() => {
-    gsap.from(sectionRef.querySelector(".footer__hero-label"), {
-      opacity: 0, y: 20, duration: 0.8,
-      scrollTrigger: { trigger: sectionRef, start: "top 85%" },
+    const ease = "expo.out";
+
+    const headEl = sectionRef.querySelector(".ft-head");
+    if (headEl) {
+      gsap.from(headEl.children, {
+        opacity: 0,
+        y: 14,
+        duration: 0.65,
+        stagger: 0.08,
+        ease,
+        scrollTrigger: { trigger: headEl, start: "top 86%" },
+      });
+    }
+
+    const rows = channelsRef.querySelectorAll(".ft-channel");
+    rows.forEach((row, i) => {
+      gsap.from(row, {
+        opacity: 0,
+        y: 12,
+        duration: 0.6,
+        ease,
+        delay: i * 0.06,
+        scrollTrigger: { trigger: channelsRef, start: "top 85%" },
+      });
     });
   });
 
   return (
     <footer ref={sectionRef} id="contact" class="footer">
 
-      {/* ── Hero contact area ── */}
-      <div class="footer__hero">
-        <div class="footer__hero-glow footer__hero-glow--1" />
-        <div class="footer__hero-glow footer__hero-glow--2" />
+      {/* ── Contact section ── */}
+      <div class="ft-contact">
+        <div class="container ft-inner">
 
-        <div class="container footer__hero-inner">
-          <div class="footer__hero-text" use:fadeUp>
-            <span class="footer__hero-label section-label">Get in Touch</span>
-            <h2 class="footer__hero-title">
-              Let's Build Something<br />
-              <span class="footer__hero-title-accent">That Matters.</span>
+          {/* Left: positioning + CTAs */}
+          <div class="ft-head">
+            <p class="ft-head__label">Get in Touch</p>
+            <h2 class="ft-head__title">
+              Let's build something<br />that works.
             </h2>
-            <p class="footer__hero-sub">
+            <p class="ft-head__sub">
               Whether you're evaluating a demo, exploring careers, or need
-              technical support — reach out and we'll respond within one
-              business day.
+              technical support, we respond within one business day.
             </p>
 
-            <div class="footer__hero-ctas">
-              <a
-                href={MAIL.requestDemo}
-                class="footer__btn footer__btn--primary"
-              >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-                </svg>
+            <div class="ft-head__actions">
+              <a href={MAIL.requestDemo} class="ft-btn ft-btn--primary">
                 Request Demo
               </a>
-              <a
-                href={MAIL.talkExpert}
-                class="footer__btn footer__btn--teal"
-              >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              <a href={MAIL.talkExpert} class="ft-btn ft-btn--ghost">
+                Talk to an engineer
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
-                Talk with Expert
               </a>
             </div>
           </div>
 
-          {/* ── Channel cards ── */}
-          <div class="footer__channels" use:staggerUp>
+          {/* Right: contact channels as list rows */}
+          <div ref={channelsRef} class="ft-channels">
             {channels.map((ch) => (
-              <a
-                href={ch.href}
-                class="footer__channel"
-                style={{ background: ch.accent, "border-color": ch.border }}
-              >
-                <div class="footer__channel-top">
-                  <span class="footer__channel-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                      <path d={ch.iconPath}/>
-                    </svg>
-                  </span>
-                  <span class="footer__channel-label">{ch.label}</span>
+              <a href={ch.href} class="ft-channel">
+                <div class="ft-channel__accent" style={{ background: ch.accentColor }} />
+                <div class="ft-channel__body">
+                  <p class="ft-channel__label">{ch.label}</p>
+                  <p class="ft-channel__email">{ch.email}</p>
+                  <p class="ft-channel__desc">{ch.desc}</p>
                 </div>
-                <span class="footer__channel-email">{ch.email}</span>
-                <span class="footer__channel-desc">{ch.desc}</span>
-                <span class="footer__channel-cta">
+                <span class="ft-channel__cta">
                   {ch.cta}
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M5 12h14M12 5l7 7-7 7"/>
                   </svg>
                 </span>
               </a>
             ))}
           </div>
+
         </div>
       </div>
 
       {/* ── Divider ── */}
-      <hr class="glow-line" />
+      <hr class="ft-rule" />
 
       {/* ── Bottom bar ── */}
-      <div class="container footer__bottom">
-        <Logo size={28} variant="full" />
+      <div class="container ft-bottom">
+        <Logo size={26} variant="full" />
 
-        <nav class="footer__nav">
+        <nav class="ft-nav">
           {footerLinks.map((link) => (
             <a
               href={link.href}
-              class="footer__nav-link"
+              class="ft-nav__link"
               onClick={(e) => {
                 e.preventDefault();
                 link.page ? navigate(link.href) : scrollTo(link.href);
@@ -161,7 +158,7 @@ export default function Footer() {
           ))}
         </nav>
 
-        <p class="footer__copy">
+        <p class="ft-copy">
           &copy; {new Date().getFullYear()} Y2kSaaS. All rights reserved.
         </p>
       </div>
@@ -169,247 +166,241 @@ export default function Footer() {
       <style>{`
         .footer {
           border-top: 1px solid var(--border-subtle);
-          position: relative;
         }
 
-        /* ── Hero ── */
-        .footer__hero {
-          position: relative;
-          overflow: hidden;
-          padding: clamp(80px, 12vh, 140px) 0 clamp(60px, 8vh, 100px);
+        /* ── Contact section ── */
+        .ft-contact {
+          padding: clamp(72px, 10vh, 120px) 0 clamp(56px, 8vh, 90px);
         }
 
-        .footer__hero-glow {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(120px);
-          pointer-events: none;
-        }
-
-        .footer__hero-glow--1 {
-          width: 600px; height: 600px;
-          background: radial-gradient(circle, rgba(99,102,241,0.08), transparent 60%);
-          top: -20%; left: -10%;
-        }
-
-        .footer__hero-glow--2 {
-          width: 400px; height: 400px;
-          background: radial-gradient(circle, rgba(45,212,191,0.06), transparent 60%);
-          bottom: -10%; right: 5%;
-        }
-
-        .footer__hero-inner {
+        .ft-inner {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 5rem;
+          gap: clamp(3rem, 7vw, 7rem);
           align-items: start;
-          position: relative;
-          z-index: 2;
         }
 
-        .footer__hero-label {
-          display: block;
-          margin-bottom: 1rem;
-        }
-
-        .footer__hero-title {
-          font-size: clamp(2.2rem, 5vw, 3.5rem);
-          font-weight: 800;
-          line-height: 1.1;
-          letter-spacing: -0.03em;
-          color: var(--text-primary);
+        /* ── Left head ── */
+        .ft-head__label {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          font-size: 0.72rem;
+          font-weight: 500;
+          letter-spacing: 0.07em;
+          color: var(--text-muted);
           margin-bottom: 1.25rem;
         }
 
-        .footer__hero-title-accent {
-          background: linear-gradient(135deg, var(--accent-indigo-light), var(--accent-teal-light));
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .footer__hero-sub {
-          font-size: 1rem;
-          line-height: 1.75;
-          color: var(--text-secondary);
-          max-width: 440px;
-          margin-bottom: 2rem;
-        }
-
-        .footer__hero-ctas {
-          display: flex;
-          gap: 0.75rem;
-          flex-wrap: wrap;
-        }
-
-        .footer__btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.75rem 1.5rem;
-          border-radius: 10px;
-          font-size: 0.875rem;
-          font-weight: 600;
-          transition: all 0.3s ease;
-          white-space: nowrap;
-        }
-
-        .footer__btn svg { display: inline-block; flex-shrink: 0; }
-
-        .footer__btn--primary {
-          background: linear-gradient(135deg, #4F46E5, #6366F1);
-          color: #fff;
-          box-shadow: 0 0 24px rgba(99,102,241,0.2);
-        }
-
-        .footer__btn--primary:hover {
-          box-shadow: 0 0 40px rgba(99,102,241,0.35);
-          transform: translateY(-2px);
-        }
-
-        .footer__btn--teal {
-          background: linear-gradient(135deg, #0f766e, #2DD4BF);
-          color: #fff;
-          box-shadow: 0 0 20px rgba(45,212,191,0.15);
-        }
-
-        .footer__btn--teal:hover {
-          box-shadow: 0 0 36px rgba(45,212,191,0.28);
-          transform: translateY(-2px);
-        }
-
-        /* ── Channels ── */
-        .footer__channels {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-
-        .footer__channel {
-          display: grid;
-          grid-template-rows: auto auto auto auto;
-          gap: 0.35rem;
-          padding: 1.4rem 1.6rem;
-          border-radius: 16px;
-          border: 1px solid;
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          transition: transform 0.3s var(--ease-out-expo), box-shadow 0.3s ease;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .footer__channel::after {
+        .ft-head__label::before {
           content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0;
+          display: block;
+          width: 18px;
           height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-        }
-
-        .footer__channel:hover {
-          transform: translateX(6px);
-          box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-
-        .footer__channel-top {
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-        }
-
-        .footer__channel-icon {
-          width: 30px; height: 30px;
-          border-radius: 8px;
-          background: rgba(255,255,255,0.05);
-          border: 1px solid rgba(255,255,255,0.08);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--text-muted);
+          background: var(--text-dim);
           flex-shrink: 0;
         }
 
-        .footer__channel-icon svg { display: inline-block; }
-
-        .footer__channel-label {
-          font-size: 0.68rem;
+        .ft-head__title {
+          font-size: clamp(1.8rem, 3.5vw, 2.8rem);
           font-weight: 700;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: var(--text-muted);
-        }
-
-        .footer__channel-email {
-          font-size: 1rem;
-          font-weight: 600;
+          line-height: 1.1;
+          letter-spacing: -0.025em;
           color: var(--text-primary);
+          margin-bottom: 1rem;
         }
 
-        .footer__channel-desc {
-          font-size: 0.8rem;
-          color: var(--text-dim);
+        .ft-head__sub {
+          font-size: 0.9rem;
+          line-height: 1.65;
+          color: var(--text-muted);
+          max-width: 42ch;
+          margin-bottom: 2rem;
         }
 
-        .footer__channel-cta {
+        .ft-head__actions {
+          display: flex;
+          align-items: center;
+          gap: 1.5rem;
+          flex-wrap: wrap;
+        }
+
+        /* Buttons — solid fill, no gradient */
+        .ft-btn {
           display: inline-flex;
           align-items: center;
           gap: 0.4rem;
-          font-size: 0.78rem;
+          font-size: 0.875rem;
           font-weight: 600;
+          border-radius: 3px;
+          transition:
+            opacity   160ms var(--ease-expo),
+            transform 160ms var(--ease-expo);
+          white-space: nowrap;
+        }
+
+        .ft-btn svg { display: inline-block; flex-shrink: 0; }
+
+        .ft-btn--primary {
+          padding: 0.65rem 1.4rem;
+          background: var(--accent-indigo-light);
+          color: oklch(0.96 0.006 265);
+        }
+
+        .ft-btn--primary:hover { opacity: 0.88; }
+        .ft-btn--primary:active { transform: scale(0.97); }
+
+        .ft-btn--ghost {
+          padding: 0.65rem 0;
           color: var(--text-muted);
-          margin-top: 0.25rem;
-          transition: color 0.2s, gap 0.2s;
         }
 
-        .footer__channel-cta svg { display: inline-block; }
+        .ft-btn--ghost:hover { color: var(--text-secondary); }
 
-        .footer__channel:hover .footer__channel-cta {
+        .ft-btn--ghost svg {
+          transition: transform 160ms var(--ease-expo);
+        }
+
+        .ft-btn--ghost:hover svg { transform: translateX(3px); }
+        .ft-btn--ghost:active { transform: scale(0.98); }
+
+        /* ── Channel rows — no glass, no backdrop-filter ── */
+        .ft-channels {
+          display: flex;
+          flex-direction: column;
+          border: 1px solid var(--border-subtle);
+          border-radius: 3px;
+          overflow: hidden;
+        }
+
+        .ft-channel {
+          display: grid;
+          grid-template-columns: 3px 1fr auto;
+          gap: 1.25rem;
+          align-items: center;
+          padding: 1.4rem 1.5rem;
+          background: var(--bg-card);
+          border-bottom: 1px solid var(--border-subtle);
+          transition:
+            background  160ms var(--ease-expo),
+            border-color 160ms var(--ease-expo);
+          position: relative;
+        }
+
+        .ft-channel:last-child {
+          border-bottom: none;
+        }
+
+        .ft-channel:hover {
+          background: var(--bg-secondary);
+        }
+
+        /* Top-edge thin accent strip per channel */
+        .ft-channel__accent {
+          width: 2px;
+          height: 100%;
+          border-radius: 1px;
+          opacity: 0.5;
+          flex-shrink: 0;
+          align-self: stretch;
+        }
+
+        .ft-channel__body {
+          min-width: 0;
+        }
+
+        .ft-channel__label {
+          font-family: var(--font-mono);
+          font-size: 0.65rem;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--text-dim);
+          margin-bottom: 0.2rem;
+        }
+
+        .ft-channel__email {
+          font-size: 0.9rem;
+          font-weight: 600;
           color: var(--text-primary);
-          gap: 0.6rem;
+          margin-bottom: 0.15rem;
         }
 
-        /* ── Bottom bar ── */
-        .footer__bottom {
+        .ft-channel__desc {
+          font-size: 0.75rem;
+          color: var(--text-dim);
+        }
+
+        .ft-channel__cta {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          font-size: 0.75rem;
+          font-weight: 500;
+          color: var(--text-dim);
+          white-space: nowrap;
+          flex-shrink: 0;
+          transition:
+            color     160ms var(--ease-expo),
+            gap       160ms var(--ease-expo);
+        }
+
+        .ft-channel__cta svg { display: inline-block; }
+
+        .ft-channel:hover .ft-channel__cta {
+          color: var(--text-secondary);
+          gap: 0.5rem;
+        }
+
+        /* ── Divider and bottom ── */
+        .ft-rule {
+          height: 1px;
+          background: var(--border-subtle);
+          border: none;
+          margin: 0;
+        }
+
+        .ft-bottom {
           display: flex;
           align-items: center;
           justify-content: space-between;
           flex-wrap: wrap;
           gap: 1.25rem;
-          padding-top: 1.75rem;
-          padding-bottom: 2rem;
+          padding-top: 1.5rem;
+          padding-bottom: 1.75rem;
         }
 
-        .footer__nav {
+        .ft-nav {
           display: flex;
           gap: 1.5rem;
           flex-wrap: wrap;
           justify-content: center;
         }
 
-        .footer__nav-link {
-          font-size: 0.82rem;
+        .ft-nav__link {
+          font-size: 0.8rem;
           color: var(--text-dim);
-          transition: color 0.25s ease;
+          transition: color 160ms var(--ease-expo);
           white-space: nowrap;
         }
 
-        .footer__nav-link:hover { color: var(--text-primary); }
+        .ft-nav__link:hover { color: var(--text-secondary); }
 
-        .footer__copy {
-          font-size: 0.78rem;
+        .ft-copy {
+          font-size: 0.75rem;
           color: var(--text-dim);
           white-space: nowrap;
+          font-variant-numeric: tabular-nums;
         }
 
         @media (max-width: 900px) {
-          .footer__hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+          .ft-inner { grid-template-columns: 1fr; gap: 2.5rem; }
         }
 
         @media (max-width: 600px) {
-          .footer__bottom { flex-direction: column; text-align: center; }
-          .footer__nav { justify-content: center; }
-          .footer__hero-ctas { flex-direction: column; }
+          .ft-bottom { flex-direction: column; text-align: center; }
+          .ft-nav { justify-content: center; }
+          .ft-head__actions { flex-direction: column; align-items: flex-start; }
         }
       `}</style>
     </footer>

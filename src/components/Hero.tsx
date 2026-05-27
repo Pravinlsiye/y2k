@@ -2,266 +2,527 @@ import { onMount } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { gsap } from "../lib/gsap";
 
+/* ── System topology schematic ─────────────────────────────────── */
+
+function SystemTopology() {
+  return (
+    <svg
+      class="hero-topo"
+      viewBox="0 0 280 372"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="Y2kSaaS system topology: Hardware, Software, and Intelligence layers connected as one integrated system"
+    >
+      {/* Node: HARDWARE */}
+      <rect class="topo-node" x="0" y="0" width="256" height="82" rx="2" />
+      <line class="topo-node-edge" x1="0" y1="0" x2="256" y2="0" />
+      <text class="topo-label" x="18" y="28">HARDWARE</text>
+      <text class="topo-sub" x="18" y="48">Embedded · IoT · Remote Device</text>
+      <circle class="topo-dot topo-dot--on" cx="230" cy="30" r="3" />
+      <circle class="topo-dot topo-dot--on" cx="244" cy="30" r="3" />
+      <circle class="topo-dot" cx="230" cy="50" r="3" />
+      <circle class="topo-dot topo-dot--on" cx="244" cy="50" r="3" />
+
+      {/* Connector H → S */}
+      <line class="topo-conn" x1="128" y1="82" x2="128" y2="134" />
+      <path class="topo-arrow" d="M123 128 L128 136 L133 128" />
+
+      {/* Node: SOFTWARE */}
+      <rect class="topo-node" x="0" y="138" width="256" height="82" rx="2" />
+      <line class="topo-node-edge" x1="0" y1="138" x2="256" y2="138" />
+      <text class="topo-label" x="18" y="166">SOFTWARE</text>
+      <text class="topo-sub" x="18" y="186">SaaS Platform · API · Infrastructure</text>
+      <circle class="topo-dot topo-dot--on" cx="230" cy="168" r="3" />
+      <circle class="topo-dot topo-dot--on" cx="244" cy="168" r="3" />
+      <circle class="topo-dot topo-dot--on" cx="230" cy="188" r="3" />
+      <circle class="topo-dot" cx="244" cy="188" r="3" />
+
+      {/* Connector S → I */}
+      <line class="topo-conn" x1="128" y1="220" x2="128" y2="272" />
+      <path class="topo-arrow" d="M123 266 L128 274 L133 266" />
+
+      {/* Node: INTELLIGENCE */}
+      <rect class="topo-node" x="0" y="276" width="256" height="82" rx="2" />
+      <line class="topo-node-edge" x1="0" y1="276" x2="256" y2="276" />
+      <text class="topo-label" x="18" y="304">INTELLIGENCE</text>
+      <text class="topo-sub" x="18" y="324">Automation · Analytics · Workflows</text>
+      <circle class="topo-dot" cx="230" cy="306" r="3" />
+      <circle class="topo-dot topo-dot--on" cx="244" cy="306" r="3" />
+      <circle class="topo-dot topo-dot--on" cx="230" cy="326" r="3" />
+      <circle class="topo-dot topo-dot--on" cx="244" cy="326" r="3" />
+
+      {/* Right rail: system bus */}
+      <line class="topo-rail" x1="270" y1="4" x2="270" y2="354" />
+      <circle class="topo-rail-node" cx="270" cy="41" r="2.5" />
+      <circle class="topo-rail-node" cx="270" cy="179" r="2.5" />
+      <circle class="topo-rail-node" cx="270" cy="317" r="2.5" />
+
+      {/* Rail connectors to nodes */}
+      <line class="topo-rail-tap" x1="256" y1="41" x2="270" y2="41" />
+      <line class="topo-rail-tap" x1="256" y1="179" x2="270" y2="179" />
+      <line class="topo-rail-tap" x1="256" y1="317" x2="270" y2="317" />
+    </svg>
+  );
+}
+
+/* ── Arrow icon ────────────────────────────────────────────────── */
+
+function ArrowRight() {
+  return (
+    <svg
+      class="hero-link__arrow"
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M5 12h14M12 5l7 7-7 7" />
+    </svg>
+  );
+}
+
+/* ── Hero ──────────────────────────────────────────────────────── */
+
 export default function Hero() {
   const navigate = useNavigate();
-  let sectionRef!: HTMLElement;
-  let taglineRef!: HTMLSpanElement;
-  let headlineRef!: HTMLHeadingElement;
-  let subtextRef!: HTMLParagraphElement;
-  let ctaRef!: HTMLDivElement;
-  let scrollRef!: HTMLDivElement;
+
+  let categoryRef!: HTMLParagraphElement;
+  let line1Ref!: HTMLSpanElement;
+  let line2Ref!: HTMLSpanElement;
+  let bodyRef!: HTMLParagraphElement;
+  let actionsRef!: HTMLDivElement;
+  let statusRef!: HTMLParagraphElement;
+  let schematicRef!: HTMLElement;
 
   onMount(() => {
-    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    const ease = "expo.out";
 
-    tl.from(taglineRef, { y: 20, opacity: 0, duration: 0.8, delay: 0.5 })
-      .from(
-        headlineRef.querySelectorAll(".hero__word"),
-        { y: 50, opacity: 0, duration: 0.7, stagger: 0.08 },
-        "-=0.3"
-      )
-      .from(subtextRef, { y: 30, opacity: 0, duration: 0.8 }, "-=0.3")
-      .from(
-        ctaRef.children,
-        { y: 20, opacity: 0, duration: 0.6, stagger: 0.15 },
-        "-=0.4"
-      )
-      .from(scrollRef, { opacity: 0, duration: 0.8 }, "-=0.2");
+    // Set initial hidden state — prevents flash before JS animation starts
+    gsap.set([categoryRef, line1Ref, line2Ref, bodyRef, actionsRef, statusRef], {
+      opacity: 0,
+      y: 14,
+    });
+    gsap.set(schematicRef, { opacity: 0 });
+
+    const tl = gsap.timeline();
+
+    // Progressive sequential reveal — weight-aware, no scale, no bounce
+    tl
+      .to(categoryRef, { opacity: 1, y: 0, duration: 0.5,  ease }, 0.35)
+      .to(line1Ref,    { opacity: 1, y: 0, duration: 0.65, ease }, 0.55)
+      .to(line2Ref,    { opacity: 1, y: 0, duration: 0.65, ease }, 0.70)
+      .to(bodyRef,     { opacity: 1, y: 0, duration: 0.65, ease }, 0.96)
+      .to(actionsRef,  { opacity: 1, y: 0, duration: 0.55, ease }, 1.13)
+      .to(statusRef,   { opacity: 1, y: 0, duration: 0.5,  ease }, 1.30)
+      // Schematic reveals slower — it's secondary context, not primary content
+      .to(schematicRef, { opacity: 1, duration: 1.4, ease: "power2.out" }, 0.7);
   });
 
-  const headline = "Engineering Connected Systems for the Real World";
-  const words = headline.split(" ");
+  const goDemo = (e: MouseEvent) => { e.preventDefault(); navigate("/demo"); };
+  const goTalk = (e: MouseEvent) => { e.preventDefault(); navigate("/talk"); };
 
   return (
-    <section ref={sectionRef} class="hero">
-      <div class="hero__bg">
-        <div class="hero__grid" />
-        <div class="hero__glow hero__glow--1" />
-        <div class="hero__glow hero__glow--2" />
-      </div>
+    <section class="hero">
+      {/* Subtle structural grid — not animated, not glowing */}
+      <div class="hero-texture" aria-hidden="true" />
 
-      <div class="hero__content container">
-        <span ref={taglineRef} class="hero__tagline">
-          HARDWARE &bull; SOFTWARE &bull; INTELLIGENCE
-        </span>
+      <div class="container hero-layout">
 
-        <h1 ref={headlineRef} class="hero__headline">
-          {words.map((word) => (
-            <span class="hero__word">{word}&nbsp;</span>
-          ))}
-        </h1>
+        {/* ── Left: editorial content ── */}
+        <div class="hero-content">
 
-        <p ref={subtextRef} class="hero__subtext">
-          Focused technology products designed for automation, operational
-          clarity, intelligent workflows, and scalable infrastructure.
-        </p>
+          <p ref={categoryRef} class="hero-category">
+            Systems Engineering Company
+          </p>
 
-        <div ref={ctaRef} class="hero__cta-group">
-          <a
-            href="/demo"
-            class="hero__cta hero__cta--primary"
-            onClick={(e) => { e.preventDefault(); navigate("/demo"); }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style={{ display: "inline-block" }}>
-              <polygon points="23 7 16 12 23 17 23 7"/>
-              <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-            </svg>
-            Request Demo
-          </a>
-          <a
-            href="/talk"
-            class="hero__cta hero__cta--teal"
-            onClick={(e) => { e.preventDefault(); navigate("/talk"); }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style={{ display: "inline-block" }}>
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-            Talk with Expert
-          </a>
-          <a
-            href="#about"
-            class="hero__cta hero__cta--secondary"
-            onClick={(e) => { e.preventDefault(); document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" }); }}
-          >
-            Explore Our Work
-          </a>
+          <h1 class="hero-headline">
+            <span ref={line1Ref} class="hero-line hero-line--1">
+              Hardware. Software.
+            </span>
+            <span ref={line2Ref} class="hero-line hero-line--2">
+              Engineered as one.
+            </span>
+          </h1>
+
+          <p ref={bodyRef} class="hero-body">
+            Y2kSaaS engineers hardware and software as a single integrated
+            system: embedded infrastructure, scalable cloud platforms, and
+            intelligent automation for industries where reliability is the
+            baseline requirement.
+          </p>
+
+          <div ref={actionsRef} class="hero-actions">
+            <a
+              class="hero-btn"
+              href="/demo"
+              onClick={goDemo}
+            >
+              Request a Demo
+            </a>
+            <a
+              class="hero-link"
+              href="/talk"
+              onClick={goTalk}
+            >
+              Talk to an engineer
+              <ArrowRight />
+            </a>
+          </div>
+
+          <p ref={statusRef} class="hero-status">
+            <span class="hero-status__dot" role="img" aria-label="Operational" />
+            <span>Systems operational</span>
+            <span class="hero-status__sep" aria-hidden="true">·</span>
+            <span>hardware + software + intelligence</span>
+          </p>
+
         </div>
-      </div>
 
-      <div ref={scrollRef} class="hero__scroll" onClick={() => document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })}>
-        <div class="hero__scroll-line" />
-        <span>Scroll</span>
+        {/* ── Right: system topology schematic ── */}
+        <aside
+          ref={schematicRef}
+          class="hero-schematic"
+          aria-hidden="true"
+        >
+          <SystemTopology />
+        </aside>
+
       </div>
 
       <style>{`
+        /* ── Section ─────────────────────────────────────────────── */
+
         .hero {
           position: relative;
           min-height: 100vh;
           display: flex;
           align-items: center;
-          justify-content: center;
           overflow: hidden;
-          padding-top: 80px;
+          padding-top: 72px; /* navbar clearance */
         }
 
-        .hero__bg {
+        /* Structural grid texture — static, no animation */
+        .hero-texture {
           position: absolute;
           inset: 0;
           pointer-events: none;
+          background-image:
+            linear-gradient(oklch(0.56 0.21 264 / 0.025) 1px, transparent 1px),
+            linear-gradient(90deg, oklch(0.56 0.21 264 / 0.025) 1px, transparent 1px);
+          background-size: 64px 64px;
+          mask-image: radial-gradient(
+            ellipse 80% 70% at 20% 50%,
+            oklch(0 0 0) 0%,
+            transparent 70%
+          );
+          -webkit-mask-image: radial-gradient(
+            ellipse 80% 70% at 20% 50%,
+            oklch(0 0 0) 0%,
+            transparent 70%
+          );
         }
 
-        .hero__grid {
-          position: absolute;
-          inset: 0;
-          background:
-            linear-gradient(rgba(99, 102, 241, 0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
-          background-size: 80px 80px;
-          mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
-          -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
-          animation: gridPulse 6s ease-in-out infinite;
-        }
+        /* ── Two-column layout ───────────────────────────────────── */
 
-        .hero__glow {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(100px);
-        }
-
-        .hero__glow--1 {
-          width: 600px;
-          height: 600px;
-          background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%);
-          top: -10%;
-          left: 50%;
-          transform: translateX(-50%);
-        }
-
-        .hero__glow--2 {
-          width: 400px;
-          height: 400px;
-          background: radial-gradient(circle, rgba(45, 212, 191, 0.08), transparent 70%);
-          bottom: 10%;
-          right: 10%;
-        }
-
-        .hero__content {
-          text-align: center;
-          position: relative;
-          z-index: 2;
-        }
-
-        .hero__tagline {
-          display: inline-block;
-          font-size: clamp(0.65rem, 1.2vw, 0.8rem);
-          font-weight: 600;
-          letter-spacing: 0.3em;
-          color: var(--text-muted);
-          margin-bottom: 1.5rem;
-        }
-
-        .hero__headline {
-          font-size: clamp(2.2rem, 6vw, 4.5rem);
-          font-weight: 800;
-          line-height: 1.08;
-          letter-spacing: -0.03em;
-          color: var(--text-primary);
-          margin-bottom: 1.5rem;
-          max-width: 900px;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .hero__word {
-          display: inline-block;
-        }
-
-        .hero__subtext {
-          font-size: clamp(1rem, 1.5vw, 1.2rem);
-          line-height: 1.7;
-          color: var(--text-secondary);
-          max-width: 600px;
-          margin: 0 auto 2.5rem;
-        }
-
-        .hero__cta-group {
-          display: flex;
-          gap: 1rem;
-          justify-content: center;
-          flex-wrap: wrap;
-        }
-
-        .hero__cta {
-          display: inline-flex;
+        .hero-layout {
+          display: grid;
+          grid-template-columns: 1fr 320px;
+          gap: clamp(3rem, 7vw, 7rem);
           align-items: center;
-          font-size: 0.95rem;
-          font-weight: 600;
-          padding: 0.85rem 2rem;
-          border-radius: 10px;
-          transition: all 0.35s ease;
+          padding-top: clamp(80px, 14vh, 140px);
+          padding-bottom: clamp(64px, 10vh, 100px);
+          position: relative;
+          z-index: 1;
         }
 
-        .hero__cta--primary {
-          background: linear-gradient(135deg, #4F46E5, #6366F1);
-          color: white;
-          box-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
+        /* ── Category label ──────────────────────────────────────── */
+
+        .hero-category {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          font-size: 0.72rem;
+          font-weight: 500;
+          letter-spacing: 0.07em;
+          color: var(--text-muted);
+          margin-bottom: 1.75rem;
+          font-variant-numeric: tabular-nums;
+          font-feature-settings: "ss01" 1;
         }
 
-        .hero__cta--primary:hover {
-          box-shadow: 0 0 50px rgba(99, 102, 241, 0.35);
-          transform: translateY(-2px);
+        .hero-category::before {
+          content: '';
+          display: block;
+          width: 20px;
+          height: 1px;
+          background: var(--text-dim);
+          flex-shrink: 0;
         }
 
-        .hero__cta--teal {
-          background: linear-gradient(135deg, #0f766e, #2DD4BF);
-          color: #fff;
-          box-shadow: 0 0 24px rgba(45, 212, 191, 0.15);
-        }
+        /* ── Headline ─────────────────────────────────────────────── */
 
-        .hero__cta--teal:hover {
-          box-shadow: 0 0 40px rgba(45, 212, 191, 0.3);
-          transform: translateY(-2px);
-        }
-
-        .hero__cta--secondary {
-          background: transparent;
-          color: var(--text-secondary);
-          border: 1px solid var(--border-subtle);
-        }
-
-        .hero__cta--secondary:hover {
-          border-color: var(--text-muted);
-          color: var(--text-primary);
-          transform: translateY(-2px);
-        }
-
-        .hero__scroll {
-          position: absolute;
-          bottom: 2rem;
-          left: 50%;
-          transform: translateX(-50%);
+        .hero-headline {
           display: flex;
           flex-direction: column;
+          margin-bottom: 1.75rem;
+        }
+
+        .hero-line {
+          display: block;
+          font-size: clamp(2.6rem, 5.2vw, 4rem);
+          font-weight: 700;
+          letter-spacing: -0.035em;
+          line-height: 1.04;
+        }
+
+        /* First line: secondary weight — sets up the second line */
+        .hero-line--1 {
+          color: var(--text-secondary);
+        }
+
+        /* Second line: primary — the declaration */
+        .hero-line--2 {
+          color: var(--text-primary);
+        }
+
+        /* ── Body copy ────────────────────────────────────────────── */
+
+        .hero-body {
+          font-size: clamp(0.95rem, 1.35vw, 1.05rem);
+          line-height: 1.65;
+          color: var(--text-muted);
+          max-width: 58ch;
+          margin-bottom: 2.25rem;
+        }
+
+        /* ── Actions ─────────────────────────────────────────────── */
+
+        .hero-actions {
+          display: flex;
           align-items: center;
-          gap: 0.5rem;
-          cursor: pointer;
-          color: var(--text-dim);
-          font-size: 0.7rem;
+          gap: 1.75rem;
+          flex-wrap: wrap;
+          margin-bottom: 2.25rem;
+        }
+
+        /* Primary CTA — solid indigo fill, no gradient */
+        .hero-btn {
+          display: inline-flex;
+          align-items: center;
+          padding: 0.65rem 1.5rem;
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: oklch(0.96 0.006 265);
+          background: var(--accent-indigo-light);
+          border-radius: 3px;
+          transition:
+            opacity  160ms var(--ease-expo),
+            transform 160ms var(--ease-expo);
+          white-space: nowrap;
+        }
+
+        .hero-btn:hover {
+          opacity: 0.88;
+        }
+
+        /* Active feedback — Emil's rule: every pressable element must respond */
+        .hero-btn:active {
+          transform: scale(0.97);
+        }
+
+        /* Ghost secondary — text link with arrow */
+        .hero-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4rem;
+          font-size: 0.875rem;
           font-weight: 500;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
+          color: var(--text-muted);
+          transition:
+            color    160ms var(--ease-expo),
+            transform 160ms var(--ease-expo);
+          white-space: nowrap;
         }
 
-        .hero__scroll-line {
-          width: 1px;
-          height: 40px;
-          background: linear-gradient(to bottom, var(--text-dim), transparent);
-          animation: bounceDown 2s ease-in-out infinite;
+        .hero-link:hover {
+          color: var(--text-secondary);
         }
 
-        @media (max-width: 768px) {
-          .hero { padding-top: 60px; }
-          .hero__cta { padding: 0.75rem 1.5rem; font-size: 0.9rem; }
+        .hero-link:active {
+          transform: scale(0.98);
+        }
+
+        .hero-link__arrow {
+          display: inline-block;
+          flex-shrink: 0;
+          transition: transform 160ms var(--ease-expo);
+        }
+
+        .hero-link:hover .hero-link__arrow {
+          transform: translateX(3px);
+        }
+
+        /* ── Status line ─────────────────────────────────────────── */
+
+        .hero-status {
+          display: flex;
+          align-items: center;
+          gap: 0.55rem;
+          font-size: 0.7rem;
+          font-weight: 400;
+          color: var(--text-dim);
+          font-variant-numeric: tabular-nums;
+          font-feature-settings: "ss01" 1;
+        }
+
+        .hero-status__dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: var(--accent-teal-light);
+          flex-shrink: 0;
+          position: relative;
+        }
+
+        /* Pulse ring — teal, subtle, single loop */
+        .hero-status__dot::after {
+          content: '';
+          position: absolute;
+          inset: -2px;
+          border-radius: 50%;
+          background: var(--accent-teal-light);
+          opacity: 0.35;
+          animation: pulseRing 2.8s var(--ease-expo) infinite;
+        }
+
+        .hero-status__sep {
+          opacity: 0.3;
+          user-select: none;
+        }
+
+        /* ── Schematic ───────────────────────────────────────────── */
+
+        .hero-schematic {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+        }
+
+        .hero-topo {
+          width: 100%;
+          max-width: 280px;
+        }
+
+        /* SVG node styles — OKLCH via currentColor and CSS vars */
+        .topo-node {
+          fill: var(--bg-secondary);
+          stroke: var(--border-moderate);
+          stroke-width: 1;
+        }
+
+        /* Top edge highlight — physically motivated surface edge */
+        .topo-node-edge {
+          stroke: oklch(0.96 0.006 265 / 0.18);
+          stroke-width: 1;
+        }
+
+        .topo-label {
+          font-family: var(--font-mono);
+          font-size: 9.5px;
+          font-weight: 600;
+          fill: var(--text-secondary);
+          letter-spacing: 0.1em;
+        }
+
+        .topo-sub {
+          font-family: var(--font-sans);
+          font-size: 8.5px;
+          fill: var(--text-dim);
+          letter-spacing: 0.02em;
+        }
+
+        .topo-dot {
+          fill: var(--text-dim);
+        }
+
+        .topo-dot--on {
+          fill: var(--accent-teal-light);
+        }
+
+        .topo-conn {
+          stroke: var(--border-subtle);
+          stroke-width: 1;
+          stroke-dasharray: 3 3;
+        }
+
+        .topo-arrow {
+          fill: oklch(0.56 0.21 264 / 0.45);
+          stroke: none;
+        }
+
+        .topo-rail {
+          stroke: oklch(0.56 0.21 264 / 0.25);
+          stroke-width: 1;
+        }
+
+        .topo-rail-node {
+          fill: oklch(0.56 0.21 264 / 0.55);
+        }
+
+        .topo-rail-tap {
+          stroke: oklch(0.56 0.21 264 / 0.18);
+          stroke-width: 1;
+        }
+
+        /* ── Responsive ──────────────────────────────────────────── */
+
+        @media (max-width: 960px) {
+          .hero-layout {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+          }
+
+          .hero-schematic {
+            justify-content: flex-start;
+            opacity: 0.65;
+          }
+
+          .hero-topo {
+            max-width: 220px;
+          }
+
+          .hero-line {
+            font-size: clamp(2.2rem, 7.5vw, 3rem);
+          }
+
+          .hero-body {
+            max-width: 100%;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .hero-actions {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+          }
+
+          .hero-schematic {
+            display: none;
+          }
+        }
+
+        /* Respect reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+          .hero-status__dot::after {
+            animation: none;
+          }
         }
       `}</style>
     </section>
