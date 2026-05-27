@@ -6,6 +6,10 @@ import App from "./App";
 import SignIn from "./pages/SignIn";
 import Careers from "./pages/Careers";
 import JobDetail from "./pages/JobDetail";
+import ProductPrism from "./pages/ProductPrism";
+import ProductAnvil from "./pages/ProductAnvil";
+import ProductVault from "./pages/ProductVault";
+import ProductSignal from "./pages/ProductSignal";
 import RequestDemo from "./pages/RequestDemo";
 import TalkExpert from "./pages/TalkExpert";
 
@@ -16,6 +20,10 @@ render(
       <Route path="/signin" component={SignIn} />
       <Route path="/careers" component={Careers} />
       <Route path="/careers/:id" component={JobDetail} />
+      <Route path="/products/prism"  component={ProductPrism}  />
+      <Route path="/products/anvil"  component={ProductAnvil}  />
+      <Route path="/products/vault"  component={ProductVault}  />
+      <Route path="/products/signal" component={ProductSignal} />
       <Route path="/demo" component={RequestDemo} />
       <Route path="/talk" component={TalkExpert} />
     </Router>

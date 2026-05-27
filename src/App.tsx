@@ -2,6 +2,7 @@ import { onMount } from "solid-js";
 import { ScrollTrigger } from "./lib/gsap";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import Products from "./components/Products";
 import About from "./components/About";
 import Services from "./components/Services";
 import Philosophy from "./components/Philosophy";
@@ -21,6 +22,7 @@ export default function App() {
         <Hero />
         <About />
         <Services />
+        <Products />
         <Philosophy />
         <VisionMission />
         <WhyWeExist />

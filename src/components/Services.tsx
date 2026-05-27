@@ -75,7 +75,7 @@ export default function Services() {
       <div class="container">
 
         <div class="svc-header" use:fadeUp>
-          <p class="svc-header__label">What We Build</p>
+          <p class="svc-header__label">Engineering Services</p>
           <h2 class="svc-header__title">
             Five engineering domains.<br />One integrated system.
           </h2>
@@ -87,7 +87,13 @@ export default function Services() {
               <span class="svc-num">{svc.num}</span>
 
               <div class="svc-main">
-                <h3 class="svc-title">{svc.title}</h3>
+                <div class="svc-title-row">
+                  <h3 class="svc-title">{svc.title}</h3>
+                  <span class="svc-status" aria-label="Operational">
+                    <span class="svc-status__dot" aria-hidden="true" />
+                    Operational
+                  </span>
+                </div>
                 <p class="svc-desc">{svc.description}</p>
               </div>
 
@@ -103,9 +109,7 @@ export default function Services() {
       </div>
 
       <style>{`
-        .svc-header {
-          margin-bottom: 3.5rem;
-        }
+        .svc-header { margin-bottom: 3.5rem; }
 
         .svc-header__label {
           display: flex;
@@ -134,10 +138,7 @@ export default function Services() {
           color: var(--text-primary);
         }
 
-        /* Numbered list — divide-y pattern, no cards */
-        .svc-list {
-          border-top: 1px solid var(--border-subtle);
-        }
+        .svc-list { border-top: 1px solid var(--border-subtle); }
 
         .svc-row {
           display: grid;
@@ -162,13 +163,19 @@ export default function Services() {
           font-weight: 600;
           color: var(--text-dim);
           letter-spacing: 0.05em;
-          line-height: 1.75rem; /* align with title baseline */
+          line-height: 1.75rem;
           padding-top: 2px;
           font-variant-numeric: tabular-nums;
         }
 
-        .svc-main {
-          min-width: 0;
+        .svc-main { min-width: 0; }
+
+        .svc-title-row {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+          margin-bottom: 0.6rem;
         }
 
         .svc-title {
@@ -176,8 +183,30 @@ export default function Services() {
           font-weight: 600;
           color: var(--text-primary);
           letter-spacing: -0.015em;
-          margin-bottom: 0.6rem;
           line-height: 1.3;
+        }
+
+        .svc-status {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          font-size: 0.6rem;
+          font-weight: 600;
+          color: var(--accent-teal-light);
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          padding: 0.18rem 0.55rem;
+          border: 1px solid oklch(0.74 0.14 185 / 0.2);
+          border-radius: 2px;
+          background: oklch(0.74 0.14 185 / 0.05);
+        }
+
+        .svc-status__dot {
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background: var(--accent-teal-light);
+          flex-shrink: 0;
         }
 
         .svc-desc {
@@ -187,7 +216,6 @@ export default function Services() {
           max-width: 55ch;
         }
 
-        /* Tags — right column, domain taxonomy */
         .svc-tags {
           display: flex;
           flex-direction: column;
@@ -206,30 +234,16 @@ export default function Services() {
           border: 1px solid var(--border-subtle);
           border-radius: 2px;
           white-space: nowrap;
-          font-variant-numeric: tabular-nums;
         }
 
         @media (max-width: 860px) {
-          .svc-row {
-            grid-template-columns: 36px 1fr;
-            gap: 1.5rem;
-          }
-
-          .svc-tags {
-            display: none;
-          }
+          .svc-row { grid-template-columns: 36px 1fr; gap: 1.5rem; }
+          .svc-tags { display: none; }
         }
 
         @media (max-width: 600px) {
-          .svc-row {
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
-          }
-
-          .svc-num {
-            line-height: 1;
-            padding-top: 0;
-          }
+          .svc-row { grid-template-columns: 1fr; gap: 0.5rem; }
+          .svc-num { line-height: 1; padding-top: 0; }
         }
       `}</style>
     </section>

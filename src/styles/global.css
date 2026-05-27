@@ -210,3 +210,13 @@ img {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Hide scrollbar globally — preserve scroll functionality */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}

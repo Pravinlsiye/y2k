@@ -1,7 +1,7 @@
 import { createSignal, onMount } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { gsap } from "../lib/gsap";
-import Logo from "../components/Logo";
+import Navbar from "../components/Navbar";
 import { MAIL } from "../lib/mail";
 import { jobs } from "../lib/jobs";
 
@@ -54,23 +54,7 @@ export default function Careers() {
     <div class="careers">
 
       {/* Nav */}
-      <nav class="cr-nav">
-        <div class="container cr-nav__inner">
-          <a class="cr-nav__logo" href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
-            <Logo size={28} variant="full" />
-          </a>
-          <a
-            class="cr-nav__back"
-            href="/"
-            onClick={(e) => { e.preventDefault(); navigate("/"); }}
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            Home
-          </a>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero */}
       <div ref={heroRef} class="container cr-hero">
@@ -181,37 +165,6 @@ export default function Careers() {
         }
 
         /* Nav */
-        .cr-nav {
-          position: sticky;
-          top: 0;
-          z-index: 50;
-          background: oklch(0.16 0.012 265 / 0.9);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border-bottom: 1px solid var(--border-subtle);
-          padding: 0.8rem 0;
-        }
-
-        .cr-nav__inner {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-
-        .cr-nav__logo { display: flex; align-items: center; }
-
-        .cr-nav__back {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.4rem;
-          font-size: 0.82rem;
-          font-weight: 500;
-          color: var(--text-muted);
-          transition: color 160ms var(--ease-expo);
-        }
-
-        .cr-nav__back svg { display: inline-block; }
-        .cr-nav__back:hover { color: var(--text-primary); }
 
         /* Hero */
         .cr-hero {

@@ -2,18 +2,20 @@ import { createSignal, onMount } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { gsap, ScrollTrigger } from "../lib/gsap";
 import Logo from "./Logo";
+import { productsData } from "../lib/productsData";
 
 export default function Navbar() {
   let navRef!: HTMLElement;
   const [scrolled, setScrolled] = createSignal(false);
+  const [productsOpen, setProductsOpen] = createSignal(false);
+  let productsTimer: ReturnType<typeof setTimeout>;
   const navigate = useNavigate();
 
   const navLinks = [
-    { label: "About",      href: "#about",      scroll: true },
-    { label: "Services",   href: "#services",   scroll: true },
-    { label: "Philosophy", href: "#philosophy", scroll: true },
+    { label: "About",      href: "#about",      scroll: true  },
+    { label: "Services",   href: "#services",   scroll: true  },
     { label: "Careers",    href: "/careers",    scroll: false },
-    { label: "Contact",    href: "#contact",    scroll: true },
+    { label: "Contact",    href: "#contact",    scroll: true  },
   ];
 
   onMount(() => {
@@ -34,9 +36,32 @@ export default function Navbar() {
     e.preventDefault();
     if (!scroll) {
       navigate(href);
-    } else {
-      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+      return;
     }
+    // If the target section exists on this page, scroll directly
+    if (document.querySelector(href)) {
+      document.querySelector(href)!.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    // Otherwise navigate to homepage then scroll after render
+    navigate("/");
+    setTimeout(() => {
+      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    }, 400);
+  };
+
+  const openProducts = () => {
+    clearTimeout(productsTimer);
+    setProductsOpen(true);
+  };
+
+  const closeProducts = () => {
+    productsTimer = setTimeout(() => setProductsOpen(false), 120);
+  };
+
+  const goProduct = (route: string) => {
+    setProductsOpen(false);
+    navigate(route);
   };
 
   return (
@@ -55,6 +80,62 @@ export default function Navbar() {
         </a>
 
         <div class="navbar__links">
+
+          {/* Products dropdown */}
+          <div
+            class="navbar__products"
+            onMouseEnter={openProducts}
+            onMouseLeave={closeProducts}
+          >
+            <button
+              class="navbar__link navbar__link--products"
+              classList={{ "navbar__link--open": productsOpen() }}
+              onClick={() => setProductsOpen((o) => !o)}
+              aria-haspopup="true"
+              aria-expanded={productsOpen()}
+              type="button"
+            >
+              Products
+              <svg
+                class="navbar__chevron"
+                classList={{ "navbar__chevron--open": productsOpen() }}
+                width="11"
+                height="11"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+
+            {/* Dropdown panel */}
+            <div
+              class="navbar__dropdown"
+              classList={{ "navbar__dropdown--open": productsOpen() }}
+              role="menu"
+              onMouseEnter={openProducts}
+              onMouseLeave={closeProducts}
+            >
+              {productsData.map((p) => (
+                <button
+                  class="navbar__dropdown-item"
+                  onClick={() => goProduct(p.route)}
+                  role="menuitem"
+                  type="button"
+                >
+                  <span class="navbar__dropdown-name">{p.name}</span>
+                  <span class="navbar__dropdown-cat">{p.category}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Regular links */}
           {navLinks.map((link) => (
             <a
               class="navbar__link"
@@ -119,19 +200,10 @@ export default function Navbar() {
           flex-shrink: 0;
         }
 
-        /* Override Logo inline SVG sizing */
-        .navbar__logo .logo-root {
-          gap: 0.55rem;
-        }
-
-        .navbar__logo .logo__wordmark {
-          font-size: 0.95rem !important;
-        }
-
         .navbar__links {
           display: flex;
           align-items: center;
-          gap: 1.75rem;
+          gap: 1.5rem;
           flex: 1;
           justify-content: center;
         }
@@ -142,12 +214,119 @@ export default function Navbar() {
           color: var(--text-muted);
           transition: color 160ms var(--ease-expo);
           white-space: nowrap;
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-family: var(--font-sans);
+          padding: 0;
         }
 
-        .navbar__link:hover {
+        .navbar__link:hover,
+        .navbar__link--open {
           color: var(--text-primary);
         }
 
+        /* Products dropdown trigger */
+        .navbar__products {
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+
+        .navbar__link--products {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+        }
+
+        .navbar__chevron {
+          display: inline-block;
+          transition: transform 200ms var(--ease-expo);
+          flex-shrink: 0;
+          opacity: 0.7;
+        }
+
+        .navbar__chevron--open {
+          transform: rotate(180deg);
+        }
+
+        /* Dropdown panel */
+        .navbar__dropdown {
+          position: absolute;
+          top: calc(100% + 10px);
+          left: 50%;
+          transform: translateX(-50%);
+          background: oklch(0.19 0.011 265);
+          border: 1px solid var(--border-moderate);
+          border-radius: 4px;
+          padding: 0.4rem;
+          min-width: 220px;
+          box-shadow: 0 8px 32px oklch(0 0 0 / 0.35);
+          opacity: 0;
+          transform: translateX(-50%) translateY(-6px);
+          pointer-events: none;
+          transition:
+            opacity   180ms var(--ease-expo),
+            transform 180ms var(--ease-expo);
+          z-index: 200;
+        }
+
+        .navbar__dropdown--open {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+          pointer-events: all;
+        }
+
+        /* Dropdown arrow tip */
+        .navbar__dropdown::before {
+          content: '';
+          position: absolute;
+          top: -5px;
+          left: 50%;
+          transform: translateX(-50%) rotate(45deg);
+          width: 8px;
+          height: 8px;
+          background: oklch(0.19 0.011 265);
+          border-top: 1px solid var(--border-moderate);
+          border-left: 1px solid var(--border-moderate);
+        }
+
+        .navbar__dropdown-item {
+          display: flex;
+          flex-direction: column;
+          gap: 0.15rem;
+          width: 100%;
+          padding: 0.65rem 0.85rem;
+          border-radius: 3px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-family: var(--font-sans);
+          text-align: left;
+          transition: background 140ms var(--ease-expo);
+        }
+
+        .navbar__dropdown-item:hover {
+          background: oklch(0.96 0.006 265 / 0.05);
+        }
+
+        .navbar__dropdown-item:active {
+          transform: scale(0.98);
+        }
+
+        .navbar__dropdown-name {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+
+        .navbar__dropdown-cat {
+          font-size: 0.68rem;
+          color: var(--text-dim);
+          font-variant-numeric: tabular-nums;
+        }
+
+        /* Right actions */
         .navbar__actions {
           display: flex;
           align-items: center;
@@ -176,9 +355,7 @@ export default function Navbar() {
           background: oklch(0.96 0.006 265 / 0.03);
         }
 
-        .navbar__signin:active {
-          transform: scale(0.97);
-        }
+        .navbar__signin:active { transform: scale(0.97); }
 
         .navbar__cta {
           display: inline-block;
@@ -194,13 +371,8 @@ export default function Navbar() {
             transform 160ms var(--ease-expo);
         }
 
-        .navbar__cta:hover {
-          opacity: 0.88;
-        }
-
-        .navbar__cta:active {
-          transform: scale(0.97);
-        }
+        .navbar__cta:hover { opacity: 0.88; }
+        .navbar__cta:active { transform: scale(0.97); }
 
         @media (max-width: 900px) {
           .navbar__links  { display: none; }
